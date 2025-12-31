@@ -1,0 +1,322 @@
+/**
+ * Animations & Transitions
+ * Smooth, subtle animations - not flashy
+ */
+
+/* Fade In/Out */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+.fade-in {
+    animation: fadeIn var(--transition-base) ease-in-out;
+}
+
+.fade-out {
+    animation: fadeOut var(--transition-base) ease-in-out;
+}
+
+/* Slide In */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(1rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-1rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-1rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(1rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.slide-in-up {
+    animation: slideInUp var(--transition-base) ease-out;
+}
+
+.slide-in-down {
+    animation: slideInDown var(--transition-base) ease-out;
+}
+
+.slide-in-left {
+    animation: slideInLeft var(--transition-base) ease-out;
+}
+
+.slide-in-right {
+    animation: slideInRight var(--transition-base) ease-out;
+}
+
+/* Scale */
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes scaleOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
+.scale-in {
+    animation: scaleIn var(--transition-base) ease-out;
+}
+
+.scale-out {
+    animation: scaleOut var(--transition-base) ease-out;
+}
+
+/* Pulse */
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Spin */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Bounce */
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(-25%);
+        animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+
+    50% {
+        transform: translateY(0);
+        animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+}
+
+.bounce {
+    animation: bounce 1s infinite;
+}
+
+/* Shimmer Loading */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.shimmer {
+    background: linear-gradient(90deg,
+            var(--color-bg-secondary) 25%,
+            var(--color-bg-tertiary) 50%,
+            var(--color-bg-secondary) 75%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+}
+
+/* Gradient Animation */
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.gradient-animated {
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
+}
+
+/* Notification Animations */
+@keyframes notificationEnter {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes notificationExit {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+.notification-enter {
+    animation: notificationEnter var(--transition-base) ease-out;
+}
+
+.notification-exit {
+    animation: notificationExit var(--transition-fast) ease-in;
+}
+
+/* Modal Animations */
+@keyframes modalBackdropEnter {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalContentEnter {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-enter {
+    animation: modalBackdropEnter var(--transition-base) ease-out;
+
+    .modal-content {
+        animation: modalContentEnter var(--transition-base) ease-out;
+    }
+}
+
+/* Smooth Page Transitions */
+@keyframes pageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.page-enter {
+    animation: pageEnter var(--transition-slow) ease-out;
+}
+
+/* Focus Ring */
+.focus-ring {
+    outline: 2px solid var(--color-accent-green);
+    outline-offset: 2px;
+}
+
+/* Smooth Color Transitions */
+.color-transition {
+    transition: color var(--transition-fast),
+        background-color var(--transition-fast),
+        border-color var(--transition-fast);
+}
+
+/* Smooth Transform Transitions */
+.transform-transition {
+    transition: transform var(--transition-base),
+        box-shadow var(--transition-base);
+}

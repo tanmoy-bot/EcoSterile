@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - EcoSterile Pro</title>
+    <link rel="stylesheet" href="../styles/variables.css">
+    <link rel="stylesheet" href="../styles/global.css">
+    <link rel="stylesheet" href="../styles/components.css">
+    <link rel="stylesheet" href="../styles/animations.css">
+    <link rel="stylesheet" href="auth-pages.css">
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-content">
+            <!-- Logo -->
+            <div class="auth-header">
+                <div class="logo-container">
+                    <div class="logo-icon">🌱</div>
+                    <h1>EcoSterile</h1>
+                </div>
+                <p class="logo-subtitle">Professional pH Monitoring System</p>
+            </div>
+
+            <!-- Sign Up Form -->
+            <div class="auth-form-wrapper">
+                <h2>Create Account</h2>
+                <p class="auth-form-description">Join EcoSterile and monitor your crops professionally</p>
+
+                <form id="signup-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-input" placeholder="you@example.com"
+                            required autocomplete="email" />
+                        <span id="email-error" class="form-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" id="password" name="password" class="form-input"
+                            placeholder="At least 6 characters" required autocomplete="new-password" />
+                        <span class="form-help">Must be at least 6 characters</span>
+                        <span id="password-error" class="form-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm-password" class="form-label">Confirm Password</label>
+                        <input type="password" id="confirm-password" name="confirm-password" class="form-input"
+                            placeholder="Confirm password" required autocomplete="new-password" />
+                        <span id="confirm-error" class="form-error"></span>
+                    </div>
+
+                    <div class="form-group checkbox">
+                        <input type="checkbox" id="agree-terms" name="agree-terms" required />
+                        <label for="agree-terms" class="checkbox-label">
+                            I agree to the Terms of Service and Privacy Policy
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block btn-lg" id="submit-btn">
+                        <span>Create Account</span>
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <div class="auth-divider">
+                    <span>or sign up with</span>
+                </div>
+
+                <!-- Google Sign Up -->
+                <button type="button" class="btn btn-google" id="google-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                    </svg>
+                    <span>Google</span>
+                </button>
+
+                <!-- Sign In Link -->
+                <div class="auth-links">
+                    <span>Already have an account?</span>
+                    <a href="login.html" class="link-primary">Sign in</a>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <p class="auth-footer">
+                Protected by Firebase Auth | Your data is secure
+            </p>
+        </div>
+
+        <!-- Background Element -->
+        <div class="auth-bg"></div>
+    </div>
+
+    <script type="module">
+        import { createAccount, signInWithGoogle } from './auth.js';
+        import { showLoading, hideLoading } from '../components/loader.js';
+        import { notificationManager } from '../components/notifications.js';
+
+        const signupForm = document.getElementById('signup-form');
+        const googleBtn = document.getElementById('google-btn');
+        const submitBtn = document.getElementById('submit-btn');
+
+        // Form validation
+        function validateForm() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const agreeTerms = document.getElementById('agree-terms').checked;
+
+            let isValid = true;
+
+            if (!email) {
+                document.getElementById('email-error').textContent = 'Email is required';
+                isValid = false;
+            } else {
+                document.getElementById('email-error').textContent = '';
+            }
+
+            if (!password || password.length < 6) {
+                document.getElementById('password-error').textContent = 'Password must be at least 6 characters';
+                isValid = false;
+            } else {
+                document.getElementById('password-error').textContent = '';
+            }
+
+            if (password !== confirmPassword) {
+                document.getElementById('confirm-error').textContent = 'Passwords do not match';
+                isValid = false;
+            } else {
+                document.getElementById('confirm-error').textContent = '';
+            }
+
+            if (!agreeTerms) {
+                notificationManager.warning('Please agree to the terms and conditions');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        // Sign Up with Email
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                return;
+            }
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            showLoading('Creating account...');
+            submitBtn.disabled = true;
+
+            const result = await createAccount(email, password);
+            hideLoading();
+            submitBtn.disabled = false;
+
+            if (result.success) {
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = '../dashboard.html';
+                }, 500);
+            }
+        });
+
+        // Sign Up with Google
+        googleBtn.addEventListener('click', async () => {
+            showLoading('Creating account with Google...');
+            googleBtn.disabled = true;
+
+            const result = await signInWithGoogle();
+            hideLoading();
+            googleBtn.disabled = false;
+
+            if (result.success) {
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = '../dashboard.html';
+                }, 500);
+            }
+        });
+    </script>
+</body>
+
+</html>

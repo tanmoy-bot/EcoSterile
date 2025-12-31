@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - EcoSterile Pro</title>
+    <link rel="stylesheet" href="styles/variables.css">
+    <link rel="stylesheet" href="styles/global.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    <link rel="stylesheet" href="styles/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-brand">
+                <span class="brand-icon">🌱</span>
+                <h1>EcoSterile Pro</h1>
+            </div>
+
+            <div class="header-actions">
+                <div class="user-menu position-relative">
+                    <div class="user-avatar" id="user-avatar" title="User menu">
+                        <span id="avatar-initial">U</span>
+                    </div>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href="#" id="profile-link">Profile Settings</a>
+                        <button class="menu-logout" id="logout-btn">Sign Out</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="dashboard-main container-xl">
+            <!-- pH Card -->
+            <div class="dashboard-card ph-card">
+                <div class="card-title">
+                    <span class="card-icon">📊</span>
+                    Current pH Level
+                </div>
+                <div class="card-content">
+                    <div class="ph-display">
+                        <div class="ph-value" id="ph-value">--</div>
+                        <div class="ph-status" id="ph-status">Loading...</div>
+                    </div>
+
+                    <div class="ph-scale">
+                        <div class="scale-bar">
+                            <div class="scale-indicator" id="scale-indicator"></div>
+                        </div>
+                        <div class="scale-labels">
+                            <span>Acidic</span>
+                            <span>Neutral</span>
+                            <span>Basic</span>
+                        </div>
+                    </div>
+
+                    <div class="ph-range">
+                        <div>Optimal Range for Selected Crop</div>
+                        <div class="optimal-badge" id="optimal-range">6.5 - 7.5</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pump Card -->
+            <div class="dashboard-card pump-card">
+                <div class="card-title">
+                    <span class="card-icon">⚙️</span>
+                    Last Pump Activity
+                </div>
+                <div class="card-content" id="pump-content">
+                    <div class="empty-state">No pump activity yet</div>
+                </div>
+            </div>
+
+            <!-- Stats Card -->
+            <div class="dashboard-card stats-card">
+                <div class="card-title">
+                    <span class="card-icon">📈</span>
+                    Statistics
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">Average pH</div>
+                        <div class="stat-value" id="avg-ph">--</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">pH Range</div>
+                        <div class="stat-value" id="ph-range">-- - --</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Basic Pump</div>
+                        <div class="stat-value" id="basic-count">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Acidic Pump</div>
+                        <div class="stat-value" id="acidic-count">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Crop Selector -->
+            <div class="dashboard-card crop-card">
+                <div class="card-title">
+                    <span class="card-icon">🌾</span>
+                    Select Crop
+                </div>
+                <select class="crop-select" id="crop-select">
+                    <optgroup label="Cereals">
+                        <option value="rice" data-min="5.5" data-max="6.5">Rice (Dhaan)</option>
+                        <option value="wheat" data-min="6.0" data-max="7.5">Wheat (Gehun)</option>
+                        <option value="maize" data-min="5.5" data-max="7.5">Maize (Makka)</option>
+                    </optgroup>
+                    <optgroup label="Pulses">
+                        <option value="chickpea" data-min="6.0" data-max="7.5" selected>Chickpea (Chana)</option>
+                        <option value="lentil" data-min="6.0" data-max="7.5">Lentil (Masoor)</option>
+                    </optgroup>
+                    <optgroup label="Vegetables">
+                        <option value="tomato" data-min="5.5" data-max="6.8">Tomato</option>
+                        <option value="potato" data-min="5.0" data-max="6.0">Potato</option>
+                        <option value="onion" data-min="6.0" data-max="7.0">Onion</option>
+                    </optgroup>
+                    <optgroup label="Fruits">
+                        <option value="mango" data-min="5.5" data-max="7.5">Mango</option>
+                        <option value="banana" data-min="5.5" data-max="7.0">Banana</option>
+                    </optgroup>
+                </select>
+                <div class="crop-info" id="crop-info">
+                    <div>Selected Crop: <strong>Chickpea (Chana)</strong></div>
+                    <div class="crop-range">Optimal pH: <strong>6.0 - 7.5</strong></div>
+                </div>
+            </div>
+
+            <!-- Chart Card -->
+            <div class="dashboard-card chart-card">
+                <div class="card-title">
+                    <span class="card-icon">📉</span>
+                    pH History Graph
+                </div>
+                <div class="chart-controls">
+                    <button class="time-btn active" data-range="24h">24 Hours</button>
+                    <button class="time-btn" data-range="7d">7 Days</button>
+                    <button class="time-btn" data-range="month">30 Days</button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="ph-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Activity Log -->
+            <div class="dashboard-card log-card">
+                <div class="card-title">
+                    <span class="card-icon">📝</span>
+                    Activity Log
+                </div>
+                <div class="log-list" id="log-list">
+                    <div class="empty-state">No pump activity recorded</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="dashboard/dashboard.js"></script>
+</body>
+
+</html>

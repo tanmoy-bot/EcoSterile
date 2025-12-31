@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoSterile Pro - Loading</title>
+    <link rel="stylesheet" href="styles/variables.css">
+    <link rel="stylesheet" href="styles/global.css">
+    <link rel="stylesheet" href="styles/auth.css">
+</head>
+
+<body style="display: flex; align-items: center; justify-content: center; min-height: 100vh;">
+    <div class="loading-spinner" style="text-align: center;">
+        <div class="spinner-circle"></div>
+        <p class="spinner-text">Loading...</p>
+    </div>
+
+    <script type="module">
+        import { onAuthChange } from './auth/auth.js';
+
+        // Listen for auth state changes
+        const unsubscribe = onAuthChange((authState) => {
+            if (authState.isAuthenticated) {
+                // User is logged in, redirect to dashboard
+                window.location.href = 'dashboard.html';
+            } else {
+                // User is not logged in, redirect to login
+                window.location.href = 'auth/login.html';
+            }
+        });
+
+        // Timeout after 5 seconds to prevent hanging
+        setTimeout(() => {
+            unsubscribe?.();
+            window.location.href = 'auth/login.html';
+        }, 5000);
+    </script>
+</body>
+
+</html>
