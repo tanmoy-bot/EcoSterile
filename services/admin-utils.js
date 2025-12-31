@@ -8,7 +8,7 @@ export const ADMIN_EMAILS = [
   "admin@ecosterile.com",
   "dev@ecosterile.com",
   "support@ecosterile.com",
-  "ayusmanchoudhury30@gmail.com",
+  "ayushmanchoudhury30@gmail.com",
   "tanmoykanoo30@gmail.com",
   // Add more admin emails as needed
 ];
@@ -313,3 +313,4 @@ export function deepClone(obj) {
 export function mergeObjects(...objects) {
   return Object.assign({}, ...objects);
 }
+
