@@ -43,6 +43,15 @@
     --text-secondary: #4b5563;
     --text-tertiary: #9ca3af;
 
+    /* Auth Page Colors (Always Light Mode) */
+    --auth-bg-primary: #f9fafb;
+    --auth-bg-secondary: #ffffff;
+    --auth-text-primary: #111827;
+    --auth-text-secondary: #4b5563;
+    --auth-border-color: #e5e7eb;
+    --auth-input-bg: #f9fafb;
+    --auth-input-border: #e5e7eb;
+
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
@@ -172,14 +181,15 @@ a:hover {
 }
 
 .btn-primary {
-    background-color: var(--primary-color);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 .btn-primary:hover:not(:disabled) {
-    background-color: var(--primary-dark);
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-1px);
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+    transform: translateY(-2px);
 }
 
 .btn-secondary {
@@ -321,21 +331,22 @@ textarea,
 select {
     width: 100%;
     padding: var(--space-3) var(--space-4);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--gray-600);
-    background-color: var(--bg-secondary);
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    background-color: #f9fafb;
     color: var(--text-primary);
     font-family: var(--font-sans);
     font-size: 0.875rem;
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
 }
 
 input:focus,
 textarea:focus,
 select:focus {
     outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    border-color: #10b981;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15), inset 0 0 0 1px rgba(16, 185, 129, 0.05);
 }
 
 input:disabled,
@@ -534,4 +545,201 @@ input::placeholder {
     body {
         font-size: 13px;
     }
+}
+
+/* ============================================
+   AUTH PAGE STYLES - Always Light Mode
+   ============================================ */
+
+/* Force light mode for auth pages */
+.auth-container,
+.auth-container * {
+    color-scheme: light;
+}
+
+.auth-left {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle radial highlight in center of auth-left */
+.auth-left::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.auth-left>div {
+    position: relative;
+    z-index: 1;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.auth-left h2,
+.auth-left p {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.auth-left div>div {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.auth-right {
+    background-color: #ffffff !important;
+    color: #111827;
+}
+
+.auth-header h1 {
+    color: #111827 !important;
+    font-weight: 600;
+}
+
+.auth-header p {
+    color: #4b5563 !important;
+    font-weight: 400;
+}
+
+/* Auth Input Fields */
+.auth-box input,
+.auth-box textarea,
+.auth-box select {
+    background-color: #f9fafb !important;
+    border: 1px solid #e5e7eb !important;
+    color: #111827 !important;
+    border-radius: 10px;
+}
+
+.auth-box input::placeholder {
+    color: #9ca3af !important;
+}
+
+.auth-box input:focus,
+.auth-box textarea:focus,
+.auth-box select:focus {
+    border-color: #10b981 !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15) !important;
+}
+
+/* Auth Primary Button */
+.auth-box .btn-primary {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+    font-weight: 500;
+    border: none;
+    transition: all var(--transition-base);
+}
+
+.auth-box .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4) !important;
+    transform: translateY(-2px);
+}
+
+.auth-box .btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3) !important;
+}
+
+/* Auth Social Button */
+.social-btn {
+    background-color: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    color: #111827 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    transition: all var(--transition-base);
+    padding: var(--space-3) var(--space-6) !important;
+    border-radius: 8px;
+}
+
+.social-btn:hover {
+    background-color: #f3f4f6 !important;
+    border-color: #b5bcc4 !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Auth Form Divider */
+.form-divider {
+    display: flex;
+    align-items: center;
+    margin: var(--space-6) 0 !important;
+    gap: 0;
+}
+
+.form-divider::before,
+.form-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: #e5e7eb !important;
+}
+
+.form-divider-text {
+    color: #9ca3af !important;
+    font-size: 0.75rem !important;
+    padding: 0 var(--space-3) !important;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Auth Footer Link */
+.auth-footer {
+    color: #4b5563 !important;
+}
+
+.auth-footer a {
+    color: #10b981 !important;
+    font-weight: 500;
+}
+
+.auth-footer a:hover {
+    color: #059669 !important;
+    text-decoration: underline;
+}
+
+/* Form Label */
+.form-label {
+    color: #111827 !important;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+/* Alerts in Auth Pages */
+.alert {
+    border-radius: 8px;
+    border-left: 4px solid;
+}
+
+.alert-success {
+    background-color: rgba(16, 185, 129, 0.1) !important;
+    border-color: #10b981 !important;
+    color: #047857 !important;
+}
+
+.alert-warning {
+    background-color: rgba(245, 158, 11, 0.1) !important;
+    border-color: #f59e0b !important;
+    color: #92400e !important;
+}
+
+.alert-danger {
+    background-color: rgba(239, 68, 68, 0.1) !important;
+    border-color: #ef4444 !important;
+    color: #991b1b !important;
+}
+
+.alert-info {
+    background-color: rgba(59, 130, 246, 0.1) !important;
+    border-color: #3b82f6 !important;
+    color: #1e40af !important;
 }
