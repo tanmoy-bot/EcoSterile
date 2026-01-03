@@ -31,10 +31,11 @@ export class HeaderComponent {
       <div class="header-wrapper">
         <div class="header-left">
           <h1 class="header-title">🌿 EcoSterile</h1>
-          <p class="header-subtitle">pH Regulator Dashboard</p>
+          <p class="header-subtitle">A Bio Acidic/Alkaline soil correction system using 'Potassium Bicarbonate' , 'Fulvic + Citric acid' for rapid microbe safe pH stabilization</p>
         </div>
 
         <div class="header-center">
+          <div class="system-label" style="color: #22c55e; font-weight: 700;">pH Regulator Dashboard</div>
           <div class="system-time">
             <span class="time-icon">🕐</span>
             <span id="headerTime">${timeNow}</span>

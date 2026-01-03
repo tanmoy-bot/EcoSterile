@@ -174,7 +174,6 @@ export class CropCardsComponent {
       .join("");
 
     container.innerHTML = cardsHTML;
-    this.attachCropCardListeners();
   }
 
   /**
@@ -216,7 +215,6 @@ export class CropCardsComponent {
       .join("");
 
     container.innerHTML = cardsHTML;
-    this.attachCropCardListeners();
   }
 
   /**
@@ -357,39 +355,46 @@ export class CropCardsComponent {
     // Crop search filter
     const searchInput = document.getElementById("cropSearch");
     if (searchInput) {
-      searchInput.addEventListener("input", (e) => {
-        this.filterCrops(e.target.value);
-      });
+      searchInput.removeEventListener("input", this.handleSearchBound);
+      this.handleSearchBound = (e) => this.filterCrops(e.target.value);
+      searchInput.addEventListener("input", this.handleSearchBound);
     }
 
     // Category tab switching
-    document.querySelectorAll(".crop-tab").forEach((tab) => {
-      tab.addEventListener("click", (e) => {
-        this.switchCategory(e.target.dataset.category);
-      });
-    });
+    const cropTabsContainer = document.querySelector(".crop-tabs-container");
+    if (cropTabsContainer) {
+      cropTabsContainer.removeEventListener("click", this.handleTabClickBound);
+      this.handleTabClickBound = (e) => {
+        const tab = e.target.closest(".crop-tab");
+        if (tab) {
+          this.switchCategory(tab.dataset.category);
+        }
+      };
+      cropTabsContainer.addEventListener("click", this.handleTabClickBound);
+    }
 
     // Show More button
     const showMoreBtn = document.getElementById("showMoreBtn");
     if (showMoreBtn) {
-      showMoreBtn.addEventListener("click", () => {
+      showMoreBtn.removeEventListener("click", this.handleShowMoreBound);
+      this.handleShowMoreBound = () => {
         this.expandCategory(this.activeTab);
-      });
+      };
+      showMoreBtn.addEventListener("click", this.handleShowMoreBound);
     }
 
-    // Crop card selection
-    this.attachCropCardListeners();
-  }
-
-  /**
-   * Attach listeners to crop cards
-   */
-  attachCropCardListeners() {
-    document.querySelectorAll(".crop-card").forEach((card) => {
-      card.addEventListener("click", () => {
-        this.selectCrop(card.dataset.value);
-      });
-    });
+    // Crop card selection using event delegation
+    const cardsContainer = document.getElementById("cropCardsContainer");
+    if (cardsContainer) {
+      cardsContainer.removeEventListener("click", this.handleCardClickBound);
+      this.handleCardClickBound = (e) => {
+        const card = e.target.closest(".crop-card");
+        if (card) {
+          this.selectCrop(card.dataset.value);
+        }
+      };
+      cardsContainer.addEventListener("click", this.handleCardClickBound);
+    }
   }
 
   /**
@@ -570,13 +575,15 @@ export class CropCardsComponent {
    */
   showConfirmationModal(cropData) {
     return new Promise((resolve) => {
+      let resolved = false;
+
       const modal = document.createElement("div");
       modal.className = "modal";
       modal.innerHTML = `
         <div class="modal-content scale-in">
           <div class="modal-header">
             <h2>Confirm Crop Change</h2>
-            <button class="btn-close">✕</button>
+            <button class="btn-close" type="button">✕</button>
           </div>
           <div class="modal-body">
             <p>You're about to change to <strong>${cropData.label}</strong></p>
@@ -586,27 +593,52 @@ export class CropCardsComponent {
             </div>
           </div>
           <div class="modal-footer">
-            <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
-            <button class="btn btn-primary" id="confirmBtn">Change Crop</button>
+            <button class="btn btn-secondary" type="button" id="cancelBtn">Cancel</button>
+            <button class="btn btn-primary" type="button" id="confirmBtn">Change Crop</button>
           </div>
         </div>
       `;
 
       document.body.appendChild(modal);
 
-      document.getElementById("cancelBtn").addEventListener("click", () => {
-        modal.remove();
-        resolve(false);
-      });
+      const closeModal = (result) => {
+        if (!resolved) {
+          resolved = true;
+          modal.remove();
+          resolve(result);
+        }
+      };
 
-      document.getElementById("confirmBtn").addEventListener("click", () => {
-        modal.remove();
-        resolve(true);
-      });
+      const cancelBtn = document.getElementById("cancelBtn");
+      const confirmBtn = document.getElementById("confirmBtn");
+      const closeBtn = modal.querySelector(".btn-close");
 
-      modal.querySelector(".btn-close").addEventListener("click", () => {
-        modal.remove();
-        resolve(false);
+      if (cancelBtn) {
+        cancelBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          closeModal(false);
+        });
+      }
+
+      if (confirmBtn) {
+        confirmBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          closeModal(true);
+        });
+      }
+
+      if (closeBtn) {
+        closeBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          closeModal(false);
+        });
+      }
+
+      // Close when clicking outside the modal content
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          closeModal(false);
+        }
       });
     });
   }

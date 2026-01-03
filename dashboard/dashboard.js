@@ -42,7 +42,28 @@ const appState = {
   optimalPHMax: 7.5,
   currentTimeRange: "24h", // Track current time filter
   chart: null,
+  chartUpdateTimer: null, // Debounce timer for chart updates
+  dataIsContinuous: true, // Track if pH data is continuous
+  lastReadingTime: null, // Track last reading for UI display
 };
+
+// ==========================================
+// Debounce helper for chart updates
+// ==========================================
+function debounceChartUpdate() {
+  // Clear existing timer if any
+  if (appState.chartUpdateTimer) {
+    clearTimeout(appState.chartUpdateTimer);
+  }
+
+  // Set new timer - wait 500ms before updating chart
+  appState.chartUpdateTimer = setTimeout(() => {
+    console.log("⏰ Debounced chart update triggered");
+    updatePHChart(appState.currentTimeRange);
+    updatePHStats();
+    appState.chartUpdateTimer = null;
+  }, 500);
+}
 
 // ==========================================
 // Crop Database - Comprehensive List with pH Ranges and Images
@@ -647,41 +668,53 @@ let cropCardsComponent = null;
 // Initialization
 // ==========================================
 async function initializeDashboard() {
-  // Check authentication and profile completion
-  authService.onAuthStateChanged(async (user) => {
-    if (!user) {
-      window.location.href = "../auth/signin.html";
-      return;
-    }
-
-    // Check if profile and location are complete
-    try {
-      const db = getDatabase();
-      const profileSnap = await get(ref(db, `users/${user.uid}/profile`));
-      const locationSnap = await get(ref(db, `users/${user.uid}/location`));
-
-      const hasProfile = profileSnap.exists();
-      const hasLocation = locationSnap.exists();
-
-      if (!hasProfile || !hasLocation) {
-        // Profile incomplete, redirect to completion page
-        console.warn(
-          "⚠️ Profile incomplete. Redirecting to complete-profile.html"
-        );
-        window.location.href = "../auth/complete-profile.html";
+  try {
+    // Check authentication and profile completion
+    authService.onAuthStateChanged(async (user) => {
+      if (!user) {
+        window.location.href = "../auth/signin.html";
         return;
       }
-    } catch (error) {
-      console.error("Error checking profile completeness:", error);
-      // On error, allow access (safer than blocking)
-    }
 
-    appState.user = user;
-    await loadUserProfile();
-    initializeComponents();
-    startMonitoring();
-    setupEventListeners();
-  });
+      try {
+        // Check if profile and location are complete
+        try {
+          const db = getDatabase();
+          const profileSnap = await get(ref(db, `users/${user.uid}/profile`));
+          const locationSnap = await get(ref(db, `users/${user.uid}/location`));
+
+          const hasProfile = profileSnap.exists();
+          const hasLocation = locationSnap.exists();
+
+          if (!hasProfile || !hasLocation) {
+            // Profile incomplete, redirect to completion page
+            console.warn(
+              "⚠️ Profile incomplete. Redirecting to complete-profile.html"
+            );
+            window.location.href = "../auth/complete-profile.html";
+            return;
+          }
+        } catch (error) {
+          console.error("Error checking profile completeness:", error);
+          // On error, allow access (safer than blocking)
+        }
+
+        appState.user = user;
+        await loadUserProfile();
+        initializeComponents();
+        startMonitoring();
+        setupEventListeners();
+      } catch (e) {
+        console.error("❌ Dashboard initialization error:", e.message);
+        // Ensure UI is at least partially visible even on error
+        initializeComponents();
+        showNotification("Dashboard loaded with limited features", "warning");
+      }
+    });
+  } catch (e) {
+    console.error("❌ Critical initialization error:", e.message);
+    showNotification("Failed to initialize dashboard", "error");
+  }
 }
 
 // ==========================================
@@ -794,122 +827,6 @@ async function loadWeather(location) {
 }
 
 // ==========================================
-// Initialize Components
-// ==========================================
-function initializeComponents() {
-  // Header Component
-  headerComponent = new HeaderComponent("headerComponent");
-  headerComponent.init(appState.user);
-
-  // Status Indicator Component
-  statusComponent = new StatusIndicatorComponent("statusComponent");
-  statusComponent.render(appState.systemStatus);
-
-  // Pump Log Component
-  pumpLogComponent = new PumpLogComponent("pumpLogComponent");
-  pumpLogComponent.render([]);
-
-  // Crop Cards Component with Recommendations
-  const recommendationEngine = new CropRecommendationEngine();
-  cropCardsComponent = new CropCardsComponent(
-    "cropCardsComponent",
-    recommendationEngine
-  );
-
-  // Build user profile for recommendations
-  const userProfileForRecommendations = {
-    farmLocation: appState.profile?.farmLocation || "",
-    // Add other relevant profile data as needed
-  };
-
-  cropCardsComponent.render(
-    CROPS_DATABASE,
-    appState.currentCrop,
-    appState.profile?.cropLocked || false,
-    userProfileForRecommendations
-  );
-
-  // Chatbot Component
-  const chatbot = new ChatbotComponent("chatbotContainer");
-  chatbot.init();
-
-  // Initialize pH Chart
-  initializePHChart();
-
-  // Load initial data
-  loadPhReadings();
-  loadPumpLogs();
-
-  // Set optimal pH display
-  updateOptimalPHDisplay();
-}
-
-// ==========================================
-// pH Chart Initialization
-// ==========================================
-function initializePHChart() {
-  const ctx = document.getElementById("phChart").getContext("2d");
-
-  appState.chart = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: [],
-      datasets: [
-        {
-          label: "pH Level",
-          data: [],
-          borderColor: "var(--primary-color)",
-          backgroundColor: "rgba(16, 185, 129, 0.1)",
-          borderWidth: 2,
-          tension: 0.4,
-          fill: true,
-          pointRadius: 3,
-          pointBackgroundColor: "var(--primary-color)",
-          pointBorderColor: "white",
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
-          pointHoverBackgroundColor: "var(--accent-teal)",
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: true,
-          labels: {
-            color: "var(--text-secondary)",
-            font: { size: 12 },
-          },
-        },
-      },
-      scales: {
-        y: {
-          min: 0,
-          max: 14,
-          ticks: {
-            color: "var(--text-tertiary)",
-            stepSize: 1,
-          },
-          grid: {
-            color: "rgba(15, 23, 42, 0.1)",
-          },
-        },
-        x: {
-          ticks: {
-            color: "var(--text-tertiary)",
-          },
-          grid: {
-            color: "rgba(15, 23, 42, 0.1)",
-          },
-        },
-      },
-    },
-  });
-}
-
-// ==========================================
 // Load pH Readings
 // ==========================================
 async function loadPhReadings() {
@@ -921,7 +838,7 @@ async function loadPhReadings() {
   if (result.success) {
     appState.phReadings = result.readings;
     console.log("pH readings loaded successfully:", appState.phReadings.length);
-    updatePHChart("24h");
+    updatePHChart();
     updatePHStats();
   } else {
     console.error("Failed to load pH readings:", result.error);
@@ -938,8 +855,8 @@ async function loadPhReadings() {
       updatePHDisplay(parseFloat(latest.value));
     }
 
-    // Update chart with the currently selected time range
-    updatePHChart(appState.currentTimeRange);
+    // Update chart
+    updatePHChart();
     updatePHStats();
   });
 }
@@ -1006,127 +923,548 @@ function updateOptimalPHDisplay() {
 }
 
 // ==========================================
-// Update pH Chart
+// Initialize Components
 // ==========================================
-// Update pH Chart
-// ==========================================
-function updatePHChart(timeRange = "24h") {
-  if (!appState.chart) return;
-
-  // Use numeric timestamps (milliseconds) for reliable comparison
-  const now = Date.now();
-  let cutoffTime;
-
-  switch (timeRange) {
-    case "24h":
-      cutoffTime = now - 24 * 60 * 60 * 1000;
-      break;
-    case "7d":
-      cutoffTime = now - 7 * 24 * 60 * 60 * 1000;
-      break;
-    case "30d":
-      cutoffTime = now - 30 * 24 * 60 * 60 * 1000;
-      break;
-    default:
-      cutoffTime = now - 24 * 60 * 60 * 1000;
+function initializeComponents() {
+  try {
+    // Header Component
+    headerComponent = new HeaderComponent("headerComponent");
+    headerComponent.init(appState.user);
+    console.log("✅ Header component initialized");
+  } catch (e) {
+    console.error("❌ Header component error:", e.message);
   }
 
-  // Filter readings by time range using numeric timestamp comparison
-  // This ensures ISO string parsing issues don't prevent multi-day filtering
-  const filteredReadings = appState.phReadings.filter((reading) => {
-    const readingTimestamp =
-      typeof reading.timestamp === "number"
-        ? reading.timestamp
-        : new Date(reading.timestamp).getTime(); // Fallback for legacy data
-    return readingTimestamp > cutoffTime;
-  });
-
-  // Generate smart labels based on time range to avoid overcrowding
-  let labels;
-  if (timeRange === "24h") {
-    // For 24h: show time labels every 2-4 entries (hourly approximation)
-    const step = Math.max(1, Math.floor(filteredReadings.length / 6));
-    labels = filteredReadings.map((reading, index) => {
-      if (index % step === 0) {
-        const timestamp =
-          typeof reading.timestamp === "number"
-            ? reading.timestamp
-            : new Date(reading.timestamp).getTime();
-        const date = new Date(timestamp);
-        return date.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
-      }
-      return "";
-    });
-  } else if (timeRange === "7d") {
-    // For 7d: show daily labels with dates (format: "DD Mon") so previous days are visible
-    const step = Math.max(1, Math.floor(filteredReadings.length / 7));
-    labels = filteredReadings.map((reading, index) => {
-      if (index % step === 0) {
-        const timestamp =
-          typeof reading.timestamp === "number"
-            ? reading.timestamp
-            : new Date(reading.timestamp).getTime();
-        const date = new Date(timestamp);
-        return date.toLocaleDateString([], { day: "2-digit", month: "short" });
-      }
-      return "";
-    });
-  } else {
-    // For 30d: show weekly labels with dates (format: "DD Mon")
-    const step = Math.max(1, Math.floor(filteredReadings.length / 5));
-    labels = filteredReadings.map((reading, index) => {
-      if (index % step === 0) {
-        const timestamp =
-          typeof reading.timestamp === "number"
-            ? reading.timestamp
-            : new Date(reading.timestamp).getTime();
-        const date = new Date(timestamp);
-        return date.toLocaleDateString([], { day: "2-digit", month: "short" });
-      }
-      return "";
-    });
+  try {
+    // Status Indicator Component
+    statusComponent = new StatusIndicatorComponent("statusComponent");
+    statusComponent.render(appState.systemStatus);
+    console.log("✅ Status component initialized");
+  } catch (e) {
+    console.error("❌ Status component error:", e.message);
   }
 
-  // Update chart with new labels and data
-  appState.chart.data.labels = labels;
-  appState.chart.data.datasets[0].data = filteredReadings.map(
-    (reading) => reading.value
-  );
-  appState.chart.update();
+  try {
+    // Pump Log Component
+    pumpLogComponent = new PumpLogComponent("pumpLogComponent");
+    pumpLogComponent.render([]);
+    console.log("✅ Pump log component initialized");
+  } catch (e) {
+    console.error("❌ Pump log component error:", e.message);
+  }
 
-  // Update the pH Range label text to reflect current filter
-  updatePHRangeLabel(timeRange, filteredReadings);
+  try {
+    // Crop Cards Component with Recommendations
+    const recommendationEngine = new CropRecommendationEngine();
+    cropCardsComponent = new CropCardsComponent(
+      "cropCardsComponent",
+      recommendationEngine
+    );
+
+    // Build user profile for recommendations
+    const userProfileForRecommendations = {
+      farmLocation: appState.profile?.farmLocation || "",
+      // Add other relevant profile data as needed
+    };
+
+    cropCardsComponent.render(
+      CROPS_DATABASE,
+      appState.currentCrop,
+      appState.profile?.cropLocked || false,
+      userProfileForRecommendations
+    );
+    console.log("✅ Crop cards component initialized");
+  } catch (e) {
+    console.error("❌ Crop cards component error:", e.message);
+  }
+
+  try {
+    // Chatbot Component
+    const chatbot = new ChatbotComponent("chatbotContainer");
+    chatbot.init();
+    console.log("✅ Chatbot component initialized");
+  } catch (e) {
+    console.error("❌ Chatbot component error:", e.message);
+  }
+
+  // Initialize pH Chart (critical for UI)
+  try {
+    initializePHChart();
+    console.log("✅ pH chart initialized");
+  } catch (e) {
+    console.error("❌ pH chart initialization error:", e.message);
+  }
+
+  // Load initial data
+  try {
+    loadPhReadings();
+  } catch (e) {
+    console.error("❌ pH readings load error:", e.message);
+  }
+
+  try {
+    loadPumpLogs();
+  } catch (e) {
+    console.error("❌ Pump logs load error:", e.message);
+  }
+
+  // Set optimal pH display
+  try {
+    updateOptimalPHDisplay();
+  } catch (e) {
+    console.error("❌ Optimal pH display error:", e.message);
+  }
 }
 
 // ==========================================
-// Update pH Range Label Based on Time Filter
+// pH Chart Initialization
 // ==========================================
-function updatePHRangeLabel(timeRange, filteredReadings = null) {
-  // Use specific ID to target only the pH Range label, not Average pH
-  const phRangeLabelEl = document.getElementById("phRangeLabel");
-  if (!phRangeLabelEl) return;
+// ================= REPLACE START =================
 
-  let timeLabel = "24h";
-  switch (timeRange) {
-    case "7d":
-      timeLabel = "7 Days";
-      break;
-    case "30d":
-      timeLabel = "30 Days";
-      break;
+// pH Chart Initialization
+function initializePHChart() {
+  const canvasElement = document.getElementById("phChart");
+  console.log("🎯 Initializing pH Chart...", canvasElement);
+
+  if (!canvasElement) {
+    console.error("❌ phChart canvas element not found!");
+    return;
   }
-  phRangeLabelEl.textContent = `pH Range (${timeLabel})`;
 
-  // Update pH range values if filtered readings provided
-  if (filteredReadings && filteredReadings.length > 0) {
+  if (typeof Chart === "undefined") {
+    console.error(
+      '❌ Chart.js not loaded - include <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>'
+    );
+    return;
+  }
+
+  const ctx = canvasElement.getContext("2d");
+  console.log("✅ Canvas context obtained:", ctx);
+
+  // Chart state for interactive features
+  appState.chartState = {
+    isDragging: false,
+    startX: 0,
+    scrollLeft: 0,
+    zoomLevel: 1.0,
+    minZoom: 0.5,
+    maxZoom: 4.0,
+  };
+
+  // If there is an existing instance, destroy it cleanly
+  if (appState.chart) {
+    try {
+      appState.chart.destroy();
+    } catch (e) {
+      // ignore
+    }
+    appState.chart = null;
+  }
+
+  appState.chart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: [], // intentionally empty - x comes from data.x
+      datasets: [
+        {
+          label: "pH Level",
+          data: [], // will be {x, y}
+          borderColor: "var(--primary-color)",
+          backgroundColor: "rgba(16, 185, 129, 0.08)",
+          borderWidth: 2,
+          tension: 0.25,
+          fill: true,
+          pointRadius: 0, // hide static dots
+          pointHoverRadius: 5,
+          pointBackgroundColor: "var(--primary-color)",
+          pointBorderColor: "white",
+          pointBorderWidth: 1,
+          spanGaps: false, // don't connect missing points
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      interaction: {
+        mode: "nearest",
+        intersect: false,
+      },
+      plugins: {
+        legend: {
+          display: true,
+          labels: {
+            color: "var(--text-secondary)",
+            font: { size: 12 },
+            padding: 10,
+          },
+        },
+        tooltip: {
+          enabled: true,
+          backgroundColor: "rgba(15, 23, 42, 0.95)",
+          titleColor: "white",
+          bodyColor: "var(--text-secondary)",
+          borderColor: "var(--primary-color)",
+          borderWidth: 1,
+          padding: 10,
+          callbacks: {
+            title: function (ctx) {
+              if (!ctx.length) return "";
+              const xVal = ctx[0].raw.x || 0; // seconds relative to now
+              const now = Date.now();
+              const timestamp = now + xVal * 1000;
+              const date = new Date(timestamp);
+              const hours = date.getHours();
+              const mins = String(date.getMinutes()).padStart(2, "0");
+              const ampm = hours >= 12 ? "PM" : "AM";
+              const displayHours = hours % 12 || 12;
+              return `${String(displayHours).padStart(2, "0")}:${mins} ${ampm}`;
+            },
+            label: function (ctx) {
+              const y = ctx.raw.y;
+              return y !== null ? `pH: ${parseFloat(y).toFixed(2)}` : "No data";
+            },
+          },
+        },
+      },
+      scales: {
+        y: {
+          min: 0,
+          max: 14,
+          ticks: {
+            color: "var(--text-tertiary)",
+            stepSize: 1,
+            font: { size: 11 },
+          },
+          grid: {
+            color: "rgba(15, 23, 42, 0.08)",
+            drawBorder: false,
+          },
+        },
+        x: {
+          type: "linear",
+          position: "bottom",
+          min: -86400,
+          max: 0,
+          ticks: {
+            color: "var(--text-tertiary)",
+            font: { size: 11 },
+            stepSize: 120, // ~2 minutes
+            callback: function (value) {
+              // Check if labels should be shown (controlled by appState.showChartLabels)
+              if (appState.dataIsContinuous === false) {
+                // Discontinuous data: hide all labels
+                return "";
+              }
+
+              const now = Date.now();
+              const timestamp = now + value * 1000;
+              const date = new Date(timestamp);
+
+              // Show label every 2 minutes for continuous data
+              if (value % 120 === 0) {
+                const hours = date.getHours();
+                const mins = String(date.getMinutes()).padStart(2, "0");
+                const ampm = hours >= 12 ? "PM" : "AM";
+                const displayHours = hours % 12 || 12;
+                return `${String(displayHours).padStart(
+                  2,
+                  "0"
+                )}:${mins} ${ampm}`;
+              }
+              return "";
+            },
+          },
+          grid: {
+            color: "rgba(15, 23, 42, 0.12)",
+            drawBorder: false,
+            lineWidth: 1,
+          },
+        },
+      },
+    },
+  });
+
+  console.log("✅ Chart instance created");
+
+  // Setup interactive features (drag/zoom)
+  setupChartInteractivity();
+}
+
+// Chart Interactivity (wheel zoom only - auto-follow NOW)
+function setupChartInteractivity() {
+  const container = document.getElementById("phChartWrapper");
+  const canvas = document.getElementById("phChart");
+  if (!container || !canvas || !appState.chart) return;
+
+  container.title =
+    "Zoom in/out using the mouse wheel or pinching. Graph auto-follows live data.";
+
+  // Wheel zoom only
+  const wheelHandler = (e) => {
+    if (!appState.chart) return;
+    e.preventDefault();
+    const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+    appState.chartState.zoomLevel = Math.max(
+      appState.chartState.minZoom,
+      Math.min(
+        appState.chartState.maxZoom,
+        appState.chartState.zoomLevel * zoomFactor
+      )
+    );
+    updateChartZoom();
+  };
+  container.removeEventListener("wheel", wheelHandler);
+  container.addEventListener("wheel", wheelHandler, { passive: false });
+
+  // Pinch-to-zoom only (no pan)
+  let lastDistance = 0;
+  container.addEventListener(
+    "touchmove",
+    (e) => {
+      if (e.touches.length !== 2) return;
+      e.preventDefault();
+      const d = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      if (lastDistance) {
+        const zoomDir = d > lastDistance ? 1.05 : 0.95;
+        appState.chartState.zoomLevel = Math.max(
+          appState.chartState.minZoom,
+          Math.min(
+            appState.chartState.maxZoom,
+            appState.chartState.zoomLevel * zoomDir
+          )
+        );
+        updateChartZoom();
+      }
+      lastDistance = d;
+    },
+    { passive: false }
+  );
+  container.addEventListener("touchend", () => {
+    lastDistance = 0;
+  });
+}
+
+// Update chart visible range according to zoom
+function updateChartZoom() {
+  if (!appState.chart) return;
+
+  // Get the actual window size from axis config (set by updatePHChart)
+  const currentMax = appState.chart.options.scales.x.max || 0;
+  const currentMinStatic = appState.chart.options.scales.x.min || -86400;
+  const windowSize = Math.abs(currentMinStatic); // Total window in seconds
+
+  // Calculate visible range based on zoom level
+  const visibleSeconds = Math.max(
+    300,
+    windowSize / appState.chartState.zoomLevel
+  ); // Min 5 min
+  const newMin = Math.max(currentMinStatic, -visibleSeconds);
+  appState.chart.update("none");
+}
+
+// Update pH Chart - Real-time Industrial Telemetry with Dynamic Time Window
+// Timeline anchored to NOW (x=0), continuous line with forward-fill
+// Window size adapts to actual data availability (min of data span or 24 hours)
+function updatePHChart() {
+  if (!appState.chart) {
+    console.warn("⚠️ appState.chart not initialized yet");
+    return;
+  }
+
+  if (!appState.phReadings || appState.phReadings.length === 0) {
+    appState.chart.data.datasets[0].data = [];
+    appState.chart.options.scales.x.min = -300; // 5 minutes minimum
+    appState.chart.options.scales.x.max = 0;
+    appState.chart.update("none");
+    return;
+  }
+
+  // Get current time
+  const now = Date.now();
+  const maxHistorySeconds = 24 * 60 * 60; // 24 hours in seconds
+
+  // Find actual data span
+  const firstReadingTime =
+    typeof appState.phReadings[0].timestamp === "number"
+      ? appState.phReadings[0].timestamp
+      : new Date(appState.phReadings[0].timestamp).getTime();
+
+  // Calculate how much data we actually have
+  const dataSpanSeconds = Math.round((now - firstReadingTime) / 1000);
+
+  // Dynamic window: use minimum of actual data span or 24 hours
+  const visibleWindowSeconds = Math.min(dataSpanSeconds, maxHistorySeconds);
+  const windowStartTime = now - visibleWindowSeconds * 1000;
+
+  // Filter to the dynamic window
+  const filtered = appState.phReadings.filter((r) => {
+    const ts =
+      typeof r.timestamp === "number"
+        ? r.timestamp
+        : new Date(r.timestamp).getTime();
+    return ts >= windowStartTime && ts <= now;
+  });
+
+  if (filtered.length === 0) {
+    appState.chart.data.datasets[0].data = [];
+    appState.chart.options.scales.x.min = -visibleWindowSeconds;
+    appState.chart.options.scales.x.max = 0;
+    appState.chart.update("none");
+    return;
+  }
+
+  // Convert to industrial telemetry format:
+  // x = seconds relative to NOW (negative for past, 0 for now)
+  const points = filtered.map((r) => {
+    const ts =
+      typeof r.timestamp === "number"
+        ? r.timestamp
+        : new Date(r.timestamp).getTime();
+    return {
+      x: Math.round((ts - now) / 1000),
+      y: parseFloat(r.value),
+      ts: ts,
+    };
+  });
+
+  // Sort by timestamp to ensure chronological order
+  points.sort((a, b) => a.ts - b.ts);
+
+  // Build timeline with 5-second intervals
+  // Use forward-fill (carry forward last known value) to eliminate gaps
+  const startSeconds = Math.ceil((windowStartTime - now) / 1000);
+  const timelinePoints = [];
+  let lastKnownValue = null;
+
+  for (let x = startSeconds; x <= 0; x += 5) {
+    const found = points.find((p) => Math.abs(p.x - x) < 2.5);
+
+    if (found) {
+      lastKnownValue = found.y;
+      timelinePoints.push({ x, y: found.y });
+    } else if (lastKnownValue !== null) {
+      // Forward-fill: carry forward last known value (continuous line)
+      timelinePoints.push({ x, y: lastKnownValue });
+    } else {
+      // No data yet for this time
+      timelinePoints.push({ x, y: null });
+    }
+  }
+
+  // Ensure latest point is at x=0 (NOW)
+  if (
+    timelinePoints.length > 0 &&
+    timelinePoints[timelinePoints.length - 1].x !== 0
+  ) {
+    timelinePoints.push({
+      x: 0,
+      y: lastKnownValue !== null ? lastKnownValue : points[points.length - 1].y,
+    });
+  }
+
+  // Update dataset
+  appState.chart.data.labels = [];
+  appState.chart.data.datasets[0].data = timelinePoints;
+
+  // X-axis uses dynamic window: spans from first data to NOW
+  appState.chart.options.scales.x.min = -visibleWindowSeconds;
+  appState.chart.options.scales.x.max = 0;
+
+  // Update chart without animation
+  appState.chart.update("none");
+
+  // Apply zoom logic (respects dynamic window, keeps x.max = 0)
+  updateChartZoom();
+
+  // Auto-scroll to latest
+  setTimeout(autoScrollToLatest, 50);
+
+  // Update range label
+  if (filtered.length > 0) {
+    const values = filtered.map((r) => parseFloat(r.value));
+    const minPH = Math.min(...values);
+    const maxPH = Math.max(...values);
     const phRangeEl = document.getElementById("phRange");
-    const values = filteredReadings.map((r) => r.value);
-    const min = Math.min(...values);
-    const max = Math.max(...values);
-    phRangeEl.textContent = `${min.toFixed(1)} - ${max.toFixed(1)}`;
+    if (phRangeEl) {
+      phRangeEl.textContent = `${minPH.toFixed(1)} - ${maxPH.toFixed(1)}`;
+    }
+
+    // Detect data continuity: check gaps between consecutive readings
+    // Gap ≤ 2 minutes (120 seconds) = continuous
+    const TWO_MINUTES = 120000; // milliseconds
+    let isContinuous = true;
+
+    for (let i = 1; i < filtered.length; i++) {
+      const prevTs =
+        typeof filtered[i - 1].timestamp === "number"
+          ? filtered[i - 1].timestamp
+          : new Date(filtered[i - 1].timestamp).getTime();
+      const currTs =
+        typeof filtered[i].timestamp === "number"
+          ? filtered[i].timestamp
+          : new Date(filtered[i].timestamp).getTime();
+      const gap = currTs - prevTs;
+
+      if (gap > TWO_MINUTES) {
+        isContinuous = false;
+        break;
+      }
+    }
+
+    appState.dataIsContinuous = isContinuous;
+
+    // Store last reading time for UI display
+    const lastTs =
+      typeof filtered[filtered.length - 1].timestamp === "number"
+        ? filtered[filtered.length - 1].timestamp
+        : new Date(filtered[filtered.length - 1].timestamp).getTime();
+    appState.lastReadingTime = lastTs;
+
+    // Update "Last reading" UI if discontinuous
+    const lastReadingEl = document.getElementById("lastReadingTime");
+    if (lastReadingEl) {
+      if (!isContinuous) {
+        const lastDate = new Date(lastTs);
+        const day = String(lastDate.getDate()).padStart(2, "0");
+        const month = lastDate.toLocaleDateString("en-US", { month: "short" });
+        const hours = lastDate.getHours();
+        const mins = String(lastDate.getMinutes()).padStart(2, "0");
+        const ampm = hours >= 12 ? "PM" : "AM";
+        const displayHours = hours % 12 || 12;
+        lastReadingEl.textContent = `Last reading: ${day} ${month}, ${String(
+          displayHours
+        ).padStart(2, "0")}:${mins} ${ampm}`;
+        lastReadingEl.style.display = "block";
+      } else {
+        lastReadingEl.style.display = "none";
+      }
+    }
+  }
+}
+
+// Auto-scroll to latest data inside wrapper (keeps UI synced)
+function autoScrollToLatest() {
+  const container = document.getElementById("phChartWrapper");
+  if (!container) return;
+  requestAnimationFrame(() => {
+    container.scrollLeft = container.scrollWidth - container.clientWidth;
+  });
+}
+
+// ================= REPLACE END =================
+
+// ==========================================
+// Update pH Range Label
+// ==========================================
+function updatePHRangeLabel() {
+  const phRangeLabelEl = document.getElementById("phRangeLabel");
+  if (phRangeLabelEl) {
+    phRangeLabelEl.textContent = "pH Range (Last 24h)";
   }
 }
 
@@ -1171,9 +1509,17 @@ function updatePHStats() {
 function startMonitoring() {
   // Simulate pH readings
   setInterval(() => {
-    // Generate realistic pH fluctuation
-    const latestReading = appState.phReadings[appState.phReadings.length - 1];
-    let currentPH = latestReading ? latestReading.value : 7.0;
+    // Get the latest pH value from the state's current pH display
+    // instead of trying to guess from old readings
+    const phValueElement = document.getElementById("phValue");
+    let currentPH = phValueElement
+      ? parseFloat(phValueElement.textContent)
+      : 7.0;
+
+    // Ensure we have a valid number
+    if (isNaN(currentPH)) {
+      currentPH = 7.0;
+    }
 
     const change = (Math.random() - 0.5) * 0.2;
     currentPH = Math.max(4, Math.min(10, currentPH + change));
@@ -1201,6 +1547,31 @@ async function addPHReading(pH) {
 }
 
 // ==========================================
+// Log Pump Activity (Helper function)
+// ==========================================
+async function logPumpActivity(pumpType, concentration) {
+  // Determine chemical based on pump type
+  let chemical = "Unknown";
+  if (pumpType === "basic") {
+    chemical = "Potassium Bicarbonate";
+  } else if (pumpType === "acidic") {
+    chemical = "Fulvic + Citric acid";
+  }
+
+  // Log using pump service
+  const result = await pumpService.logActivity(
+    appState.user.uid,
+    pumpType,
+    chemical,
+    concentration
+  );
+
+  if (!result.success) {
+    console.error("Failed to log pump activity:", result.error);
+  }
+}
+
+// ==========================================
 // Check and Activate Pump
 // ==========================================
 async function checkAndActivatePump(pH) {
@@ -1217,7 +1588,7 @@ async function checkAndActivatePump(pH) {
     await pumpService.logActivity(
       appState.user.uid,
       "basic",
-      "Ammonium Hydroxide (NH4OH)",
+      "Potassium Bicarbonate",
       "1%"
     );
   } else if (pH > appState.optimalPHMax) {
@@ -1225,7 +1596,7 @@ async function checkAndActivatePump(pH) {
     await pumpService.logActivity(
       appState.user.uid,
       "acidic",
-      "Acetic Acid (CH3COOH)",
+      "Fulvic + Citric acid",
       "1%"
     );
   }
@@ -1322,13 +1693,17 @@ async function connectArduino() {
     } finally {
       try {
         reader.releaseLock();
-      } catch (e) {}
+      } catch (e) {
+        // Safe to ignore release lock errors
+      }
     }
 
     // Close port and cleanup
     try {
       await port.close();
-    } catch (e) {}
+    } catch (e) {
+      // Safe to ignore close errors
+    }
     currentPort = null;
     appState.systemStatus.arduinoConnected = false;
     updateArduinoStatus(false);
@@ -1380,79 +1755,80 @@ function updateArduinoStatus(isConnected) {
 
 // ==========================================
 function setupEventListeners() {
-  // Arduino Connect Button
-  const connectBtn = document.getElementById("connectArduinoBtn");
-  if (connectBtn) {
-    connectBtn.addEventListener("click", () => {
-      if (appState.systemStatus.arduinoConnected) {
-        disconnectArduino();
-      } else {
-        connectArduino();
-      }
-    });
+  try {
+    // Arduino Connect Button
+    const connectBtn = document.getElementById("connectArduinoBtn");
+    if (connectBtn) {
+      connectBtn.addEventListener("click", () => {
+        if (appState.systemStatus.arduinoConnected) {
+          disconnectArduino();
+        } else {
+          connectArduino();
+        }
+      });
+    }
+  } catch (e) {
+    console.error("❌ Arduino button setup error:", e.message);
   }
 
-  // Time filter buttons with improved visual feedback
-  document.querySelectorAll(".time-filter-btn").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      // Remove active class from all buttons
-      document
-        .querySelectorAll(".time-filter-btn")
-        .forEach((b) => b.classList.remove("active"));
-      // Add active class to clicked button for clear visual feedback
-      e.target.classList.add("active");
-      const timeRange = e.target.dataset.range;
-      appState.currentTimeRange = timeRange; // Save selected time range persistently
-      // Update chart with new time range, smart labels, and dynamic pH range label
-      updatePHChart(timeRange);
+  try {
+    // Hide time filter buttons (24h only)
+    document.querySelectorAll(".time-filter-btn").forEach((btn) => {
+      btn.style.display = "none";
     });
-  });
+  } catch (e) {
+    console.error("❌ Time filter buttons setup error:", e.message);
+  }
 
-  // Set first button as active
-  const firstTimeBtn = document.querySelector(".time-filter-btn");
-  if (firstTimeBtn) firstTimeBtn.classList.add("active");
-
-  // Logout event
-  window.addEventListener("logout", async () => {
-    const result = await authService.signOut();
-    if (result.success) {
-      window.location.href = "../auth/signin.html";
-    }
-  });
-
-  // Crop selection event
-  window.addEventListener("cropSelected", async (e) => {
-    const cropValue = e.detail.cropValue;
-    const selectedCrop = CROPS_DATABASE.find((c) => c.value === cropValue);
-
-    if (!selectedCrop) return;
-
-    // Show confirmation modal
-    const confirmed = await cropCardsComponent.showConfirmationModal(
-      selectedCrop
-    );
-
-    if (confirmed) {
-      // Update crop in database
-      const result = await userService.saveCropSelection(appState.user.uid, {
-        value: selectedCrop.value,
-        minPH: selectedCrop.minPH,
-        maxPH: selectedCrop.maxPH,
-      });
-
+  try {
+    // Logout event
+    window.addEventListener("logout", async () => {
+      const result = await authService.signOut();
       if (result.success) {
-        appState.currentCrop = selectedCrop;
-        appState.optimalPHMin = selectedCrop.minPH;
-        appState.optimalPHMax = selectedCrop.maxPH;
-
-        updateOptimalPHDisplay();
-        cropCardsComponent.updateCurrentCrop(selectedCrop);
-
-        // Show success message
-        showNotification(`Crop changed to ${selectedCrop.label}`, "success");
+        window.location.href = "../auth/signin.html";
       }
-    }
-  });
+    });
+  } catch (e) {
+    console.error("❌ Logout event setup error:", e.message);
+  }
+
+  try {
+    // Crop selection event
+    window.addEventListener("cropSelected", async (e) => {
+      const cropValue = e.detail.cropValue;
+      const selectedCrop = CROPS_DATABASE.find((c) => c.value === cropValue);
+
+      if (!selectedCrop) return;
+
+      // Show confirmation modal
+      const confirmed = await cropCardsComponent.showConfirmationModal(
+        selectedCrop
+      );
+
+      if (confirmed) {
+        // Update crop in database
+        const result = await userService.saveCropSelection(appState.user.uid, {
+          value: selectedCrop.value,
+          minPH: selectedCrop.minPH,
+          maxPH: selectedCrop.maxPH,
+        });
+
+        if (result.success) {
+          appState.currentCrop = selectedCrop;
+          appState.optimalPHMin = selectedCrop.minPH;
+          appState.optimalPHMax = selectedCrop.maxPH;
+
+          updateOptimalPHDisplay();
+          cropCardsComponent.updateCurrentCrop(selectedCrop);
+
+          // Show success message
+          showNotification(`Crop changed to ${selectedCrop.label}`, "success");
+        }
+      }
+    });
+  } catch (e) {
+    console.error("❌ Crop selection event setup error:", e.message);
+  }
 }
 
 // ==========================================

@@ -507,14 +507,16 @@
             currentUser = user;
             adminEmailEl.textContent = user.email;
 
-            // Verify admin status from database
+            // Verify admin from Realtime Database
             try {
-                const adminCheckSnap = await get(ref(db, `admins/${user.uid}`));
-                if (adminCheckSnap.exists() && adminCheckSnap.val() === true) {
+                const adminRef = ref(db, `admins/${currentUser.uid}`);
+                const adminSnap = await get(adminRef);
+
+                if (adminSnap.exists() && adminSnap.val() === true) {
                     isAdmin = true;
                     await loadAllData();
                 } else {
-                    showStatus("❌ Admin access required. Signing out...", "error");
+                    showStatus("❌ Admin access required", "error");
                     setTimeout(async () => {
                         await signOut(auth);
                         window.location.href = "admin-login.html";

@@ -1178,4 +1178,50 @@
     }
 }
 
+/* ==========================================
+   Scrollable pH Chart Styles
+   ========================================== */
+.ph-chart-container {
+    position: relative;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    background: var(--bg-secondary);
+    padding: var(--space-4);
+    scroll-behavior: smooth;
+}
+
+/* Custom scrollbar styling */
+.ph-chart-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.ph-chart-container::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.05);
+    border-radius: 4px;
+}
+
+.ph-chart-container::-webkit-scrollbar-thumb {
+    background: rgba(15, 23, 42, 0.2);
+    border-radius: 4px;
+}
+
+.ph-chart-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(15, 23, 42, 0.3);
+}
+
+.ph-chart-wrapper {
+    position: relative;
+    height: 350px;
+    min-width: 100%;
+    display: inline-block;
+}
+
+.ph-chart-wrapper canvas {
+    max-height: 100%;
+    width: 100% !important;
+}
+
 ```

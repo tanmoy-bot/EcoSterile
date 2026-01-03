@@ -93,11 +93,13 @@
                         </div>
                     </div>
 
-                    <!-- pH Chart -->
+                    <!-- pH Chart with Horizontal Scroll -->
                     <div style="margin-top: var(--space-8);">
                         <h4 style="margin-bottom: var(--space-4);">pH Trend Graph</h4>
-                        <div style="position: relative; height: 300px;">
-                            <canvas id="phChart"></canvas>
+                        <div class="ph-chart-container">
+                            <div class="ph-chart-wrapper" id="phChartWrapper">
+                                <canvas id="phChart"></canvas>
+                            </div>
                         </div>
                         <div style="display: flex; gap: var(--space-4); margin-top: var(--space-4);">
                             <button class="btn btn-secondary time-filter-btn" data-range="24h">24 Hours</button>

@@ -355,9 +355,10 @@ export const phService = {
   /**
    * Get pH readings for a user
    */
-  async getReadings(userId, limit = 1000) {
+  async getReadings(userId, limit = 500) {
     try {
       // Query user-scoped phReadings for complete data isolation
+      // Limit to 500 readings for performance
       const ref_path = query(
         ref(db, `users/${userId}/phReadings`),
         orderByChild("timestamp"),
@@ -372,13 +373,20 @@ export const phService = {
 
       const readings = [];
       snapshot.forEach((child) => {
-        readings.push({
-          id: child.key,
-          ...child.val(),
-        });
+        const data = child.val();
+        // Validate data structure
+        if (data && typeof data.value === "number" && data.timestamp) {
+          readings.push({
+            id: child.key,
+            value: data.value,
+            timestamp: data.timestamp,
+          });
+        }
       });
 
-      console.log(`Fetched ${readings.length} pH readings for user ${userId}`);
+      console.log(
+        `Fetched ${readings.length} valid pH readings for user ${userId}`
+      );
       return { success: true, readings };
     } catch (error) {
       console.error("Error fetching pH readings:", error);
@@ -399,11 +407,17 @@ export const phService = {
     return onValue(ref_path, (snapshot) => {
       const readings = [];
       snapshot.forEach((child) => {
+        const data = child.val();
+        console.log("📊 Reading snapshot:", data);
+
         readings.push({
           id: child.key,
-          ...child.val(),
+          value: data.value,
+          timestamp: data.timestamp,
         });
       });
+
+      console.log("📊 All readings in callback:", readings.length);
       callback(readings);
     });
   },
