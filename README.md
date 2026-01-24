@@ -1,4 +1,4 @@
-# 🌿 EcoSterile-Pro
+# 🌿 EcoSterile
 
 **Professional-Grade pH Regulator Dashboard for Agricultural Monitoring**
 
@@ -52,7 +52,7 @@ A production-ready web application for real-time pH monitoring and automated pum
 ## 📁 Project Structure
 
 ```
-EcoSterile-Pro/
+EcoSterile/
 ├── auth/
 │   ├── signin.html          # Professional sign-in page
 │   ├── signup.html          # Account creation page
@@ -88,11 +88,10 @@ EcoSterile-Pro/
 1. **Open the project folder**
 
    ```
-   C:\Users\MY\OneDrive\Desktop\EcoSterile-Pro
+   C:\Users\MY\OneDrive\Desktop\EcoSterile
    ```
 
 2. **Start with Sign-In page**
-
    - Open `auth/signin.html` in your browser
    - Or navigate to the file directly
 
@@ -104,13 +103,11 @@ EcoSterile-Pro/
 ### First Use
 
 1. **Select Your Crop**
-
    - Scroll to the "Crop Type Selection" section
    - Choose your crop from the grid
    - The optimal pH range will update automatically
 
 2. **Monitor pH Levels**
-
    - View real-time pH reading in the gauge
    - Watch the trend graph for patterns
    - Pump activity appears in the timeline

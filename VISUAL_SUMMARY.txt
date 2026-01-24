@@ -296,7 +296,7 @@ Net change: -50 lines, better code quality ✅
 
 ### BEFORE
 ```
-EcoSterile-Pro
+EcoSterile
     ↓ depends on
 India Location Hub API (external, no control)
     ↓ has dependency on
@@ -315,7 +315,7 @@ Issues:
 
 ### AFTER
 ```
-EcoSterile-Pro
+EcoSterile
     ↓ includes
 /data/indiaLocations.json (local, full control)
 

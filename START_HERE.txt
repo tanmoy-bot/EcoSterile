@@ -293,6 +293,6 @@ Your hidden admin panel is ready to use. No additional setup required beyond add
 
 ---
 
-**Built with ❤️ for EcoSterile-Pro**
+**Built with ❤️ for EcoSterile**
 
 *Your hidden admin panel is ready to deploy!* 🚀
