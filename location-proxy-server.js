@@ -22,6 +22,15 @@ const LOCATION_API_BASE = "https://india-location-hub.in/api";
 // Middleware
 // ====================================
 
+// Security Headers Middleware
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  next();
+});
+
 // Enable CORS for all routes
 app.use(
   cors({
@@ -29,7 +38,7 @@ app.use(
     methods: ["GET", "OPTIONS"],
     allowedHeaders: ["Content-Type"],
     maxAge: 3600,
-  })
+  }),
 );
 
 // JSON parsing
@@ -56,7 +65,7 @@ app.get("/api/location/states", async (req, res) => {
 
     if (!response.ok) {
       throw new Error(
-        `External API returned ${response.status}: ${response.statusText}`
+        `External API returned ${response.status}: ${response.statusText}`,
       );
     }
 
@@ -89,21 +98,21 @@ app.get("/api/location/districts", async (req, res) => {
     }
 
     console.log(
-      `📍 Proxying request to: /locations/districts?stateCode=${stateCode}`
+      `📍 Proxying request to: /locations/districts?stateCode=${stateCode}`,
     );
     const response = await fetch(
-      `${LOCATION_API_BASE}/locations/districts?stateCode=${stateCode}`
+      `${LOCATION_API_BASE}/locations/districts?stateCode=${stateCode}`,
     );
 
     if (!response.ok) {
       throw new Error(
-        `External API returned ${response.status}: ${response.statusText}`
+        `External API returned ${response.status}: ${response.statusText}`,
       );
     }
 
     const data = await response.json();
     console.log(
-      `✅ Districts fetched for state ${stateCode}: ${data.length} items`
+      `✅ Districts fetched for state ${stateCode}: ${data.length} items`,
     );
 
     res.json(data);
@@ -132,21 +141,21 @@ app.get("/api/location/talukas", async (req, res) => {
     }
 
     console.log(
-      `📍 Proxying request to: /locations/talukas?districtCode=${districtCode}`
+      `📍 Proxying request to: /locations/talukas?districtCode=${districtCode}`,
     );
     const response = await fetch(
-      `${LOCATION_API_BASE}/locations/talukas?districtCode=${districtCode}`
+      `${LOCATION_API_BASE}/locations/talukas?districtCode=${districtCode}`,
     );
 
     if (!response.ok) {
       throw new Error(
-        `External API returned ${response.status}: ${response.statusText}`
+        `External API returned ${response.status}: ${response.statusText}`,
       );
     }
 
     const data = await response.json();
     console.log(
-      `✅ Talukas fetched for district ${districtCode}: ${data.length} items`
+      `✅ Talukas fetched for district ${districtCode}: ${data.length} items`,
     );
 
     res.json(data);
@@ -175,21 +184,21 @@ app.get("/api/location/villages", async (req, res) => {
     }
 
     console.log(
-      `📍 Proxying request to: /locations/villages?talukaCode=${talukaCode}`
+      `📍 Proxying request to: /locations/villages?talukaCode=${talukaCode}`,
     );
     const response = await fetch(
-      `${LOCATION_API_BASE}/locations/villages?talukaCode=${talukaCode}`
+      `${LOCATION_API_BASE}/locations/villages?talukaCode=${talukaCode}`,
     );
 
     if (!response.ok) {
       throw new Error(
-        `External API returned ${response.status}: ${response.statusText}`
+        `External API returned ${response.status}: ${response.statusText}`,
       );
     }
 
     const data = await response.json();
     console.log(
-      `✅ Villages fetched for taluka ${talukaCode}: ${data.length} items`
+      `✅ Villages fetched for taluka ${talukaCode}: ${data.length} items`,
     );
 
     res.json(data);

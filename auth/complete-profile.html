@@ -575,7 +575,7 @@
 
             <!-- Logout Link -->
             <div class="logout-link">
-                <a href="#" onclick="logoutUser(event)">Sign out</a>
+                <a href="#" id="logoutLink">Sign out</a>
             </div>
         </div>
     </div>
@@ -618,6 +618,9 @@
             await authService.signOut();
             window.location.href = 'signin.html';
         };
+
+        // Attach logout event listener
+        document.getElementById('logoutLink').addEventListener('click', window.logoutUser);
 
         // Load India location data
         async function loadLocationData() {

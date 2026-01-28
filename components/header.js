@@ -49,6 +49,7 @@ export class HeaderComponent {
           </button>
 
           <div id="userDropdown" class="dropdown hidden">
+            <a href="#" id="lidarLink" class="dropdown-item">🗺️ Lidar Field Mapping</a>
             <a href="#" id="profileLink" class="dropdown-item">⚙️ Profile</a>
             <a href="#" id="settingsLink" class="dropdown-item">🔧 Settings</a>
             <hr class="dropdown-divider">
@@ -83,8 +84,16 @@ export class HeaderComponent {
     });
 
     // Navigation links
+    const lidarLink = document.getElementById("lidarLink");
     const profileLink = document.getElementById("profileLink");
     const settingsLink = document.getElementById("settingsLink");
+
+    if (lidarLink) {
+      lidarLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.location.href = "./lidar.html";
+      });
+    }
 
     if (profileLink) {
       profileLink.addEventListener("click", (e) => {

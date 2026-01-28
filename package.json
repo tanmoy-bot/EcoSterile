@@ -4,8 +4,10 @@
   "description": "Location API proxy server for EcoSterile - bypasses CORS issues",
   "main": "location-proxy-server.js",
   "scripts": {
-    "start": "node location-proxy-server.js",
-    "dev": "nodemon location-proxy-server.js"
+    "start": "node server.js",
+    "proxy": "node location-proxy-server.js",
+    "dev": "nodemon server.js",
+    "dev:proxy": "nodemon location-proxy-server.js"
   },
   "keywords": [
     "location",
