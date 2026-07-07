@@ -1,0 +1,31 @@
+{
+  "name": "ecosterile-location-proxy",
+  "version": "1.0.0",
+  "description": "Location API proxy server for EcoSterile - bypasses CORS issues",
+  "main": "location-proxy-server.js",
+  "scripts": {
+    "start": "node server.js",
+    "proxy": "node location-proxy-server.js",
+    "dev": "nodemon server.js",
+    "dev:proxy": "nodemon location-proxy-server.js"
+  },
+  "keywords": [
+    "location",
+    "proxy",
+    "india",
+    "ecosterile"
+  ],
+  "author": "EcoSterile Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

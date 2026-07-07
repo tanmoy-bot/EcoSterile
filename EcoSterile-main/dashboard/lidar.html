@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoSterile - Lidar Field Mapping</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../styles/theme.css">
+    <link rel="stylesheet" href="../styles/animations.css">
+    <link rel="stylesheet" href="../styles/dashboard.css">
+    <link rel="stylesheet" href="../styles/lidar.css">
+</head>
+
+<body>
+    <div class="dashboard-wrapper">
+        <!-- FIXED Header (doesn't scroll) -->
+        <div class="dashboard-header">
+            <div id="headerComponent"></div>
+        </div>
+
+        <!-- Main Content Area (scrollable) -->
+        <div class="dashboard-content">
+            <div class="dashboard-body">
+                <!-- Page Header -->
+                <section class="lidar-header">
+                    <h1 class="lidar-title">🗺️ Lidar Field Mapping</h1>
+                    <p class="lidar-subtitle">3D field visualization and soil pH analysis</p>
+                </section>
+
+                <!-- Feature Status Banner -->
+                <div class="lidar-status-banner">
+                    <div class="status-icon">⚠️</div>
+                    <div class="status-content">
+                        <div class="status-title">SIMULATED DATA — hardware not connected</div>
+                        <div class="status-description">This is a beta feature. Hardware integration coming soon.</div>
+                    </div>
+                </div>
+
+                <!-- Upload Section -->
+                <section class="lidar-upload-section">
+                    <h2 class="section-title">📤 Field Data Upload</h2>
+                    <p class="section-description">Upload field data for 3D visualization and analysis</p>
+
+                    <div class="upload-grid">
+                        <!-- 3D Mesh Model Upload -->
+                        <div class="upload-card">
+                            <div class="upload-card-icon">📦</div>
+                            <div class="upload-card-content">
+                                <h3 class="upload-card-title">Upload 3D Mesh Model</h3>
+                                <p class="upload-card-desc">Polycam export (.obj, .ply, .glb)</p>
+                                <div class="upload-placeholder">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="17 8 12 3 7 8"></polyline>
+                                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                                    </svg>
+                                    <p>Click to upload or drag and drop</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lidar Scan Upload -->
+                        <div class="upload-card">
+                            <div class="upload-card-icon">📸</div>
+                            <div class="upload-card-content">
+                                <h3 class="upload-card-title">Upload Lidar Scan / Screenshot</h3>
+                                <p class="upload-card-desc">Lidar point cloud or screenshot (.txt, .png, .jpg)</p>
+                                <div class="upload-placeholder">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="17 8 12 3 7 8"></polyline>
+                                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                                    </svg>
+                                    <p>Click to upload or drag and drop</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Create Field Button -->
+                    <div class="upload-action">
+                        <button id="createLidarBtn" class="btn btn-primary">
+                            ✨ Create Lidar Field
+                        </button>
+                        <p class="upload-note">Upload data to enable field creation</p>
+                    </div>
+                </section>
+
+                <!-- View Mode Tabs -->
+                <section class="lidar-view-section">
+                    <h2 class="section-title">👁️ View Modes</h2>
+
+                    <div class="view-tabs">
+                        <button class="view-tab-btn active" data-view="mesh">
+                            <span class="tab-icon">🎯</span>
+                            <span class="tab-label">Mesh View</span>
+                        </button>
+                        <button class="view-tab-btn" data-view="scan">
+                            <span class="tab-icon">🔍</span>
+                            <span class="tab-label">Scan View</span>
+                        </button>
+                        <button class="view-tab-btn" data-view="heatmap">
+                            <span class="tab-icon">🌡️</span>
+                            <span class="tab-label">pH Heatmap</span>
+                        </button>
+                    </div>
+
+                    <!-- 3D Viewer Placeholder -->
+                    <div class="lidar-viewer-container">
+                        <div class="viewer-placeholder">
+                            <div class="placeholder-icon">🎬</div>
+                            <div class="placeholder-text">3D Viewer will render here</div>
+                            <div class="placeholder-note">
+                                Upload field data above to load visualization
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Field Information Panel -->
+                <section class="lidar-info-section">
+                    <h2 class="section-title">📊 Field Information</h2>
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <div class="info-label">Field Area</div>
+                            <div class="info-value">--</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-label">Average pH</div>
+                            <div class="info-value">--</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-label">Data Points</div>
+                            <div class="info-value">--</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-label">Last Updated</div>
+                            <div class="info-value">--</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="lidar.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="google-site-verification" content="ZapoE1usZWW1tbSNnuL1DeglENkdOoqkV9hMNfudUFI" />
+
+    <title>EcoSterile - pH Regulator Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 60px;
+        }
+
+        .logo {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: #cbd5e1;
+            margin-bottom: 40px;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            line-height: 1.8;
+            margin-bottom: 60px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            padding: 16px 40px;
+            border-radius: 8px;
+            border: none;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            border: 2px solid #10b981;
+        }
+
+        .btn-secondary:hover {
+            background-color: #334155;
+            transform: translateY(-2px);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 80px;
+            padding-top: 60px;
+            border-top: 1px solid rgba(15, 23, 42, 0.1);
+        }
+
+        .feature-card {
+            padding: 30px;
+            background-color: rgba(30, 41, 59, 0.8);
+            border-radius: 12px;
+            border: 1px solid rgba(16, 185, 129, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: #10b981;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #f1f5f9;
+        }
+
+        .feature-desc {
+            font-size: 0.95rem;
+            color: #cbd5e1;
+        }
+
+        .footer {
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(15, 23, 42, 0.1);
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .version {
+            display: inline-block;
+            background-color: rgba(16, 185, 129, 0.1);
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .logo {
+                font-size: 60px;
+            }
+        }
+
+        .docs-section {
+            margin-top: 60px;
+            padding: 40px;
+            background-color: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            border: 1px solid rgba(16, 185, 129, 0.1);
+        }
+
+        /* Disease Classifier Section */
+        .disease-section {
+            margin-top: 60px;
+            padding: 30px;
+            background: linear-gradient(180deg, rgba(16,185,129,0.06), rgba(6,182,212,0.03));
+            border-radius: 14px;
+            border: 1px solid rgba(16,185,129,0.08);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .disease-card {
+            padding: 22px;
+            background: rgba(15,23,42,0.7);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+            display: flex;
+            flex-direction: column;
+            min-height: 220px;
+        }
+
+        .disease-visual {
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: radial-gradient(circle at 20% 20%, rgba(6,182,212,0.12), transparent 20%), linear-gradient(135deg, rgba(16,185,129,0.08), rgba(6,182,212,0.02));
+            border: 1px solid rgba(255,255,255,0.02);
+        }
+
+        .disease-visual .icon {
+            font-size: 64px;
+        }
+
+        .disease-title {
+            font-size: 1.5rem;
+            color: #ecfeff;
+            margin-bottom: 8px;
+        }
+
+        .disease-desc {
+            color: #cbd5e1;
+            margin-bottom: 14px;
+        }
+
+        .disease-instructions {
+            text-align: left;
+            color: #d1dce6;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            font-size: 0.98rem;
+        }
+
+        .classify-btn {
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-weight: 700;
+            box-shadow: 0 10px 25px rgba(6,182,212,0.12);
+        }
+
+        .disease-actions { display:flex; gap:12px; justify-content:center; }
+
+        /* Interactive disease option cards */
+        .disease-options { display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; }
+        .disease-option { flex:1 1 220px; background:rgba(15,23,42,0.6); padding:12px; border-radius:10px; cursor:pointer; border:1px solid transparent; transition:all 0.22s ease; display:flex; gap:12px; align-items:center; }
+        .disease-option:hover { transform:translateY(-6px); box-shadow:0 12px 30px rgba(2,6,23,0.5); border-color:rgba(16,185,129,0.12); }
+        .disease-option .left { font-size:28px; width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:8px; background:linear-gradient(135deg, rgba(16,185,129,0.08), rgba(6,182,212,0.04)); }
+        .disease-option .title { font-weight:700; color:#e6f6f5; }
+        .disease-option .subtitle { color:#9fb0c0; font-size:0.92rem; }
+        .disease-option.selected { border-color:rgba(6,182,212,0.28); background:linear-gradient(180deg, rgba(6,182,212,0.03), rgba(16,185,129,0.02)); }
+        .disease-option .check { margin-left:auto; font-size:18px; color:#34d399; display:none; }
+        .disease-option.selected .check { display:block; }
+
+        @media (max-width: 800px) {
+            .disease-section {
+                grid-template-columns: 1fr;
+            }
+
+            .disease-visual { height: 180px; }
+        }
+
+        .docs-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #f1f5f9;
+        }
+
+        .docs-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .doc-link {
+            padding: 12px 20px;
+            background-color: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 8px;
+            color: #10b981;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .doc-link:hover {
+            background-color: rgba(16, 185, 129, 0.15);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🌿</div>
+            <h1>EcoSterile</h1>
+            <p class="subtitle">Professional pH Regulator Dashboard</p>
+            <div class="version">v1.0.0 — Production Ready</div>
+        </div>
+
+        <p class="description">
+            Real-time pH monitoring and automated pump control for agricultural systems.
+            <br>
+            Industrial-grade monitoring dashboard built for precision and reliability.
+        </p>
+
+        <div class="buttons">
+            <a href="auth/signin.html" class="btn btn-primary">
+                🚀 Launch Dashboard
+            </a>
+            <a href="auth/farmer-guide.html" class="btn btn-secondary">
+                👨‍🌾 Farmer's Guide
+            </a>
+            <a href="README.md" class="btn btn-secondary">
+                📖 Documentation
+            </a>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">Real-time Monitoring</div>
+                <div class="feature-desc">Live pH readings with interactive trend graphs and historical data</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚙️</div>
+                <div class="feature-title">Smart Pump Control</div>
+                <div class="feature-desc">Automatic activation based on optimal pH ranges for your crop</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🌾</div>
+                <div class="feature-title">Crop Management</div>
+                <div class="feature-desc">50+ crops with customizable optimal pH ranges</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔐</div>
+                <div class="feature-title">Secure Auth</div>
+                <div class="feature-desc">Professional authentication with email and Google OAuth</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <div class="feature-title">Dark & Light Theme</div>
+                <div class="feature-desc">Industrial-grade UI with smooth theme switching</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <div class="feature-title">Responsive Design</div>
+                <div class="feature-desc">Works perfectly on desktop, tablet, and mobile devices</div>
+            </div>
+        </div>
+
+        <!-- Disease Classification Section -->
+        <div class="disease-section" aria-labelledby="disease-heading">
+            <div class="disease-card">
+                <div class="disease-title" id="disease-heading">🌿 Crop Disease Classifier</div>
+                <div class="disease-desc">Identify common crop diseases quickly using your smartphone camera. This tool
+                    runs a lightweight image classifier and returns a probable diagnosis — use it to get fast guidance.</div>
+
+                <div class="disease-instructions">
+                    <strong>How to use</strong>
+                    <ol style="margin-top:8px; margin-left: 18px; color: #cbd5e1;">
+                        <li>Click <strong>Open Classifier</strong> below.</li>
+                        <li>Allow camera access or upload a clear photo of the affected leaf.</li>
+                        <li>Center the diseased area and avoid blurry photos — natural daylight helps.</li>
+                        <li>Wait a few seconds for the model to return the predicted class and confidence.</li>
+                        <li>Follow recommended treatment guidance from trusted agricultural sources.</li>
+                    </ol>
+                </div>
+
+                <div class="disease-actions" style="margin-top:auto;">
+                    <a href="https://smartphone.edgeimpulse.com/classifier.html?apiKey=ei_c19a64056146e76a860ed8f13b222f25a68474dd111149e36822b8f99062cd0a" target="_blank" rel="noopener noreferrer"
+                        class="btn btn-primary classify-btn">🔬 Open Classifier</a>
+                    <a href="auth/farmer-guide.html" class="btn btn-secondary">📘 Tips & Care</a>
+                </div>
+            </div>
+
+            <div class="disease-visual" aria-hidden="true">
+                <div style="text-align:center;">
+                    <div class="icon">📷🌱</div>
+                    <div style="color:#94a3b8; margin-top:12px;">Quick, on-device classification</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documentation Section -->
+        <div class="docs-section">
+            <div class="docs-title">📚 Getting Started</div>
+            <div class="docs-links">
+                <a href="QUICKSTART.md" class="doc-link">⚡ Quick Start</a>
+                <a href="README.md" class="doc-link">📖 Full Docs</a>
+                <a href="PROJECT_SUMMARY.md" class="doc-link">📋 Summary</a>
+                <a href="IMPLEMENTATION_CHECKLIST.md" class="doc-link">✅ Checklist</a>
+            </div>
+        </div>
+
+        <!-- Contact & Support Section -->
+        <div class="support-section"
+            style="margin-top: 50px; padding: 30px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.2);">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h3 style="color: #10b981; margin-bottom: 10px;">📧 Need Help? Get in Touch</h3>
+                <p style="color: #cbd5e1; margin-bottom: 20px;">Have questions, feedback, or need support? Contact us
+                    directly:</p>
+                <a href="mailto:ar.tanmoy.2011@gmail.com"
+                    style="display: inline-block; padding: 12px 30px; background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%); color: white; text-decoration: none; border-radius: 6px; font-weight: bold; transition: transform 0.3s; cursor: pointer;"
+                    onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">📧
+                    Send Email</a>
+            </div>
+        </div>
+
+        <!-- Bug Report Notice -->
+        <div class="bug-notice"
+            style="margin-top: 30px; padding: 20px; background: rgba(249, 115, 22, 0.1); border-left: 4px solid #f97316; border-radius: 6px;">
+            <div style="display: flex; align-items: flex-start; gap: 15px;">
+                <div style="font-size: 1.5rem;">📢</div>
+                <div>
+                    <h4 style="color: #f97316; margin-bottom: 8px;">Bug Reports & Feedback</h4>
+                    <p style="color: #cbd5e1; margin-bottom: 10px; font-size: 0.95rem;">
+                        Found a bug or have suggestions? We appreciate your feedback! Please report any issues:
+                    </p>
+                    <a href="mailto:ar.tanmoy.2011@gmail.com?subject=Bug Report - EcoSterile"
+                        style="color: #f97316; text-decoration: underline; font-weight: bold;">📧 Report a Bug</a>
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-top: 10px;">Your contribution helps us improve
+                        the platform for everyone.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Disease Selection Modal -->
+        <div id="diseaseModal" style="display:none; position:fixed; inset:0; background:rgba(2,6,23,0.6); align-items:center; justify-content:center; z-index:9999;"> 
+            <div style="max-width:820px; width:92%; background:linear-gradient(180deg,#0b1220,#0f172a); border-radius:12px; padding:20px; border:1px solid rgba(16,185,129,0.08); box-shadow:0 20px 50px rgba(2,6,23,0.7); color:#e6f6f5;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+                    <h2 style="margin:0; font-size:1.25rem;">Select Observed Disease</h2>
+                    <button id="diseaseModalClose" style="background:transparent; color:#94a3b8; border:none; font-size:1.25rem; cursor:pointer;">✕</button>
+                </div>
+
+                <p style="color:#cbd5e1; margin-top:8px;">If you already ran the classifier, you can also choose the disease below to receive tailored prevention and treatment guidance.</p>
+
+                <div class="disease-options" role="list">
+                    <div class="disease-option" data-value="angular" role="listitem" tabindex="0">
+                        <div class="left">🟢</div>
+                        <div>
+                            <div class="title">Angular Leaf Spot</div>
+                            <div class="subtitle">Bacterial disease in cucurbits</div>
+                        </div>
+                        <div class="check">✔</div>
+                    </div>
+
+                    <div class="disease-option" data-value="beanrust" role="listitem" tabindex="0">
+                        <div class="left">🟠</div>
+                        <div>
+                            <div class="title">Bean Rust</div>
+                            <div class="subtitle">Fungal rust on beans</div>
+                        </div>
+                        <div class="check">✔</div>
+                    </div>
+
+                    <div class="disease-option" data-value="healthy" role="listitem" tabindex="0">
+                        <div class="left">✅</div>
+                        <div>
+                            <div class="title">Healthy</div>
+                            <div class="subtitle">No visible disease</div>
+                        </div>
+                        <div class="check">✔</div>
+                    </div>
+                </div>
+
+                <div id="diseaseAdvice" style="margin-top:16px; color:#d1dce6; line-height:1.5;"></div>
+
+                <div style="display:flex; justify-content:center; gap:12px; margin-top:18px;">
+                    <button id="diseaseConfirm" class="btn btn-primary">Show Recommendation</button>
+                    <button id="diseaseCancel" class="btn btn-secondary">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Privacy Notice -->
+        <div class="privacy-notice"
+            style="margin-top: 30px; padding: 20px; background: rgba(96, 165, 250, 0.1); border-left: 4px solid #60a5fa; border-radius: 6px;">
+            <div style="display: flex; align-items: flex-start; gap: 15px;">
+                <div style="font-size: 1.5rem;">🔒</div>
+                <div>
+                    <h4 style="color: #60a5fa; margin-bottom: 8px;">We Value Your Privacy</h4>
+                    <p style="color: #cbd5e1; margin-bottom: 12px; font-size: 0.95rem;">
+                        When you use this website, we may collect questions from the assistant and email messages from
+                        users.
+                        All data is stored securely and used only for improving your experience.
+                    </p>
+                    <p style="color: #cbd5e1; margin-bottom: 12px; font-size: 0.95rem;">
+                        We do NOT sell or share your data with third parties.
+                    </p>
+                    <div style="display: flex; gap: 15px; font-size: 0.9rem;">
+                        <a href="auth/privacy-policy.html"
+                            style="color: #60a5fa; text-decoration: none; font-weight: bold;">🔒 Read Privacy Policy</a>
+                        <a href="auth/terms-conditions.html"
+                            style="color: #60a5fa; text-decoration: none; font-weight: bold;">⚖️ Terms & Conditions</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Information -->
+        <div class="team-section"
+            style="margin-top: 50px; padding: 40px; background: rgba(16, 185, 129, 0.05); border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.2);">
+            <h3 style="color: #10b981; margin-bottom: 30px; font-size: 1.5rem;">👥 Our Team</h3>
+
+            <div style="text-align: left; margin-bottom: 25px;">
+                <h4 style="color: #cbd5e1; margin-bottom: 10px; font-size: 1.1rem;">👨‍💼 Developer</h4>
+                <ul style="color: #94a3b8; line-height: 1.8; list-style: none;">
+                    <li>• Ayushman Choudhury</li>
+                    <li>• Tanmoy Kanoo</li>
+                </ul>
+            </div>
+
+            <div style="text-align: left; margin-bottom: 25px;">
+                <h4 style="color: #cbd5e1; margin-bottom: 10px; font-size: 1.1rem;">🎯 Project Leader</h4>
+                <ul style="color: #94a3b8; line-height: 1.8; list-style: none;">
+                    <li>• Tanmoy Kanoo</li>
+                </ul>
+            </div>
+
+            <div style="text-align: left;">
+                <h4 style="color: #cbd5e1; margin-bottom: 10px; font-size: 1.1rem;">👫 Team Members</h4>
+                <ul style="color: #94a3b8; line-height: 1.8; list-style: none;">
+                    <li>• Tanmoy Kanoo</li>
+                    <li>• Ayushman Choudhury</li>
+                    <li>• Angshswarup Biswas</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer" style="margin-top: 50px;">
+            <p>
+                🌱 EcoSterile • Production-Ready Dashboard<br>
+                <strong>Version 1.0.0</strong> • January 24, 2026<br>
+                Built with HTML5, CSS3, JavaScript, and Firebase<br>
+                <br>
+                <a href="auth/privacy-policy.html"
+                    style="color: #10b981; text-decoration: none; margin-right: 20px;">Privacy Policy</a>
+                <a href="auth/terms-conditions.html" style="color: #10b981; text-decoration: none;">Terms &
+                    Conditions</a>
+            </p>
+        </div>
+    </div>
+</body>
+
+
+</html>
+
+<script>
+// Disease modal logic: show modal 1s after classifier opened
+(function(){
+    const openBtns = document.querySelectorAll('a[href*="smartphone.edgeimpulse.com/classifier.html"]');
+    const modal = document.getElementById('diseaseModal');
+    const closeBtn = document.getElementById('diseaseModalClose');
+    const cancelBtn = document.getElementById('diseaseCancel');
+    const confirmBtn = document.getElementById('diseaseConfirm');
+    const adviceEl = document.getElementById('diseaseAdvice');
+
+    function showModal(){ modal.style.display = 'flex'; window.scrollTo({top:0,behavior:'smooth'}); }
+    function hideModal(){ modal.style.display = 'none'; adviceEl.innerHTML = ''; const opts = modal.querySelectorAll('.disease-option'); opts.forEach(r=>r.classList.remove('selected')); }
+
+    openBtns.forEach(b => {
+        b.addEventListener('click', (e)=>{
+            // open in new tab as before
+            const href = b.getAttribute('href');
+            window.open(href, '_blank', 'noopener');
+            // show modal after 1s
+            setTimeout(()=>{
+                showModal();
+            }, 1000);
+            e.preventDefault();
+        });
+    });
+
+    closeBtn.addEventListener('click', hideModal);
+    cancelBtn.addEventListener('click', hideModal);
+
+    // interactive card selection
+    const options = modal.querySelectorAll('.disease-option');
+    options.forEach(opt => {
+        opt.addEventListener('click', ()=>{ options.forEach(o=>o.classList.remove('selected')); opt.classList.add('selected'); });
+        opt.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); opt.click(); } });
+    });
+
+    confirmBtn.addEventListener('click', ()=>{
+        const sel = modal.querySelector('.disease-option.selected');
+        if(!sel){ adviceEl.innerHTML = '<em style="color:#fca5a5;">Please select an option above.</em>'; return; }
+        const v = sel.getAttribute('data-value');
+        if(v==='angular'){
+            adviceEl.innerHTML = `
+                <h3 style="margin:0 0 8px 0; color:#d1fae5;">Angular Leaf Spot — Overview</h3>
+                <p>Angular leaf spot is a bacterial disease caused by <em>Pseudomonas syringae</em> pv. <em>lachrymans</em>, common in cucurbits (cucumbers, squash, melons, pumpkins). It produces angular water-soaked spots that turn gray and necrotic and may create holes; it thrives in cool, wet conditions.</p>
+                <h4 style="margin:12px 0 6px 0; color:#bdebf7;">Prevention Strategies</h4>
+                <ul>
+                    <li>Use certified disease-free seeds or treat seeds (hot water 50°C for 30 min or garlic solutions).</li>
+                    <li>Rotate crops 2–3 years; avoid planting cucurbits in the same spot.</li>
+                    <li>Improve air circulation; space plants and avoid overhead watering (use drip irrigation).</li>
+                    <li>Water in the morning so foliage dries quickly; check soil moisture before watering.</li>
+                </ul>
+                <h4 style="margin:10px 0 6px 0; color:#bdebf7;">Organic Treatments</h4>
+                <ul>
+                    <li>Neem oil spray: per label (e.g., 2 tsp/L), spray weekly on affected leaves.</li>
+                    <li>Baking soda solution: 1 tbsp baking soda + 1 tsp dish soap per gallon water; spray evenings every 7 days.</li>
+                    <li>Garlic spray: steep crushed garlic 5–6 cloves in 1 L overnight; strain and spray 2–3 times weekly.</li>
+                    <li>Copper (organic-approved) sprays weekly when conditions favor disease; avoid hot/dry days to reduce phytotoxicity.</li>
+                </ul>
+                <h4 style="margin:10px 0 6px 0; color:#bdebf7;">Chemical Treatments & Management</h4>
+                <p>Copper-based fungicides or chlorothalonil can be used when organics fail—follow label instructions and safety precautions. Prune infected parts (do not compost), disinfect tools (10% bleach), and destroy crop debris at season end. Consistent treatment + cultural fixes give best control.</p>
+            `;
+        } else if(v==='beanrust'){
+            adviceEl.innerHTML = `
+                <h3 style="margin:0 0 8px 0; color:#d1fae5;">Bean Rust — Overview</h3>
+                <p>Bean rust, caused by the fungus <em>Uromyces</em> spp., affects many bean types and presents as yellow-white pustules on leaf undersides that turn powdery brown/cinnamon with yellow halos. Severe infections cause defoliation and yield loss.</p>
+                <h4 style="margin:12px 0 6px 0; color:#bdebf7;">Prevention Strategies</h4>
+                <ul>
+                    <li>Rotate crops 2–3 years away from legumes to break spore cycles.</li>
+                    <li>Space plants 6–12 in for airflow; use drip irrigation; water early morning.</li>
+                    <li>Plant disease-resistant varieties when available.</li>
+                    <li>Maintain garden hygiene: remove volunteers and debris post-harvest.</li>
+                </ul>
+                <h4 style="margin:10px 0 6px 0; color:#bdebf7;">Organic Treatments</h4>
+                <ul>
+                    <li>Remove infected parts early and destroy them; sterilize tools between cuts.</li>
+                    <li>Neem oil or sulfur dust weekly from first symptoms; biofungicides like <em>Bacillus subtilis</em> can suppress spores.</li>
+                </ul>
+                <h4 style="margin:10px 0 6px 0; color:#bdebf7;">Chemical Treatments & Management</h4>
+                <p>Use strobilurin fungicides or copper products per label if organic measures fail. Scout weekly and treat at first signs. End-season cleanup and tool disinfection reduce next-season pressure.</p>
+            `;
+        } else if(v==='healthy'){
+            adviceEl.innerHTML = `<h3 style="margin:0 0 8px 0; color:#d1fae5;">Healthy — Guidance</h3><p>Your plant appears healthy. Maintain good cultural practices: proper spacing, morning watering, balanced fertilization, and monitor humidity (keep <90% at night). Use the EcoSterile dashboard to track environmental stressors like pH (recommended 6.0–7.0) and humidity.</p>`;
+        }
+        adviceEl.scrollIntoView({behavior:'smooth'});
+    });
+})();
+</script>
+
+
+

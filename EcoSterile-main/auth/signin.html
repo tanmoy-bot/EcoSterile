@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoSterile - Sign In</title>
+    <link rel="stylesheet" href="../styles/theme.css">
+    <link rel="stylesheet" href="../styles/animations.css">
+    <style>
+        .auth-container {
+            display: flex;
+            min-height: 100vh;
+            background: #ffffff;
+        }
+
+        .auth-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: var(--space-8);
+        }
+
+        .auth-left {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: rgba(255, 255, 255, 0.9);
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-left::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .auth-left>div {
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-right {
+            background-color: #ffffff;
+        }
+
+        @media (min-width: 768px) {
+            .auth-left {
+                display: flex;
+            }
+
+            .auth-left>div {
+                max-width: 400px;
+            }
+
+            .auth-right {
+                flex: 1;
+            }
+        }
+
+        .auth-box {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: var(--space-8);
+        }
+
+        .auth-logo {
+            font-size: 3rem;
+            margin-bottom: var(--space-4);
+        }
+
+        .auth-header h1 {
+            font-size: 1.75rem;
+            color: #111827;
+            margin-bottom: var(--space-2);
+            font-weight: 600;
+        }
+
+        .auth-header p {
+            color: #4b5563;
+            margin: 0;
+            font-weight: 400;
+        }
+
+        .form-divider {
+            display: flex;
+            align-items: center;
+            margin: var(--space-6) 0;
+            gap: 0;
+        }
+
+        .form-divider::before,
+        .form-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: #e5e7eb;
+        }
+
+        .form-divider-text {
+            color: #9ca3af;
+            font-size: 0.75rem;
+            padding: 0 var(--space-3);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: var(--space-3) var(--space-6);
+            border: 1px solid #d1d5db;
+            background-color: #ffffff;
+            border-radius: 8px;
+            color: #111827;
+            cursor: pointer;
+            transition: all 150ms ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .social-btn:hover {
+            background-color: #f3f4f6;
+            border-color: #b5bcc4;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .social-btn img {
+            height: 20px;
+            width: auto;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: var(--space-6);
+            color: #4b5563;
+        }
+
+        .auth-footer a {
+            color: #10b981;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .auth-footer a:hover {
+            color: #059669;
+            text-decoration: underline;
+        }
+
+        .alert {
+            margin-bottom: var(--space-6);
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-bottom: var(--space-6);
+        }
+
+        .forgot-password a {
+            color: #6b7280;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 150ms ease;
+        }
+
+        .forgot-password a:hover {
+            color: #10b981;
+            text-decoration: underline;
+        }
+
+        .copy-btn:hover {
+            opacity: 1;
+        }
+
+        .btn {
+            padding: var(--space-3) var(--space-6);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 150ms ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .copy-btn:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .auth-panel {
+                padding: var(--space-6);
+            }
+
+            .auth-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-container">
+        <!-- Left Panel (Hidden on mobile) -->
+        <div class="auth-panel auth-left">
+            <div>
+                <h2
+                    style="font-size: 2rem; margin-bottom: var(--space-6); font-weight: 600; color: rgba(255, 255, 255, 0.95);">
+                    🌱 Welcome Back</h2>
+                <p
+                    style="font-size: 1.125rem; line-height: 1.8; color: rgba(255, 255, 255, 0.9); margin: 0 0 var(--space-8) 0;">
+                    Monitor your crops in real-time, control pH levels precisely, and maximize your yield with
+                    intelligent automation.
+                </p>
+                <div
+                    style="margin-top: var(--space-8); padding-top: var(--space-8); border-top: 1px solid rgba(255,255,255,0.1);">
+                    <div
+                        style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); color: rgba(255, 255, 255, 0.9);">
+                        <span>✓ Real-time pH Monitoring</span>
+                    </div>
+                    <div
+                        style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); color: rgba(255, 255, 255, 0.9);">
+                        <span>✓ Automated Pump Control</span>
+                    </div>
+                    <div
+                        style="display: flex; align-items: center; gap: var(--space-3); color: rgba(255, 255, 255, 0.9);">
+                        <span>✓ Historical Data & Analytics</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="auth-panel auth-right">
+            <div class="auth-box fade-in">
+                <div class="auth-header">
+                    <div class="auth-logo">🌿</div>
+                    <h1>EcoSterile</h1>
+                    <p>pH Regulator Dashboard</p>
+                </div>
+
+                <!-- Alert Messages -->
+                <div id="alertBox"></div>
+
+                <!-- Sign In Form -->
+                <form id="signInForm">
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" id="email" placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                    </div>
+
+                    <div class="forgot-password">
+                        <a href="reset-password.html">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: var(--space-4);">
+                        <span id="btnText">Sign In</span>
+                        <span id="spinner" class="spinner" style="display: none;"></span>
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <div class="form-divider">
+                    <span class="form-divider-text">OR</span>
+                </div>
+
+                <!-- Social Sign In -->
+                <div class="social-buttons">
+                    <button type="button" class="social-btn" id="googleSignIn">
+                        <img src="https://freepnglogo.com/images/all_img/google-logo-2025-6ffb.png" alt="Google">
+                        <span>Continue with Google</span>
+                    </button>
+                </div>
+
+                <!-- Sign Up Link -->
+                <div class="auth-footer">
+                    Don't have an account? <a href="signup.html">Create one now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { authService } from '../services/firebase.js';
+        import { getDatabase, ref, get } from 'https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js';
+
+        const alertBox = document.getElementById('alertBox');
+        const googleSignIn = document.getElementById('googleSignIn');
+
+        // Show Alert
+        function showAlert(message, type = 'error') {
+            const alertClass = type === 'success' ? 'alert-success' : type === 'warning' ? 'alert-warning' : 'alert-danger';
+            alertBox.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
+            setTimeout(() => {
+                alertBox.innerHTML = '';
+            }, 5000);
+        }
+
+        // Make showAlert globally available for form
+        window.showAlert = showAlert;
+
+        // Check if user profile is complete
+        async function isProfileComplete(uid) {
+            try {
+                const db = getDatabase();
+
+                // Check if profile exists
+                const profileSnap = await get(ref(db, `users/${uid}/profile`));
+                const hasProfile = profileSnap.exists();
+
+                // Check if location exists
+                const locationSnap = await get(ref(db, `users/${uid}/location`));
+                const hasLocation = locationSnap.exists();
+
+                return hasProfile && hasLocation;
+            } catch (error) {
+                console.error('Error checking profile:', error);
+                return false;
+            }
+        }
+
+        // Sign In Form Submit
+        const form = document.getElementById('signInForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const btnText = document.getElementById('btnText');
+        const spinner = document.getElementById('spinner');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!email || !password) {
+                showAlert('Please fill in all fields');
+                return;
+            }
+
+            // Show loading state
+            form.classList.add('loading');
+            btnText.textContent = 'Signing in...';
+            spinner.style.display = 'inline-block';
+
+            const result = await authService.signIn(email, password);
+
+            if (result.success) {
+                showAlert('Sign in successful! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = '../dashboard/dashboard.html';
+                }, 1500);
+            } else {
+                showAlert(result.error || 'Sign in failed');
+                form.classList.remove('loading');
+                btnText.textContent = 'Sign In';
+                spinner.style.display = 'none';
+            }
+        });
+
+        // Google Sign In - with profile completion check
+        googleSignIn.addEventListener('click', async () => {
+            googleSignIn.disabled = true;
+            googleSignIn.textContent = '⏳ Signing in...';
+
+            const result = await authService.signInWithGoogle();
+
+            if (result.success) {
+                // Get the current user UID
+                const user = authService.getCurrentUser && authService.getCurrentUser();
+                const uid = user?.uid;
+
+                if (uid) {
+                    // Check if profile is complete
+                    const profileComplete = await isProfileComplete(uid);
+
+                    if (profileComplete) {
+                        // Profile is complete, go to dashboard
+                        showAlert('Sign in successful! Redirecting...', 'success');
+                        setTimeout(() => {
+                            window.location.href = '../dashboard/dashboard.html';
+                        }, 1500);
+                    } else {
+                        // Profile incomplete, redirect to complete-profile page
+                        showAlert('Please complete your profile...', 'success');
+                        setTimeout(() => {
+                            window.location.href = 'complete-profile.html';
+                        }, 1500);
+                    }
+                } else {
+                    // Fallback: redirect to complete-profile (safer approach)
+                    showAlert('Please complete your profile...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'complete-profile.html';
+                    }, 1500);
+                }
+            } else {
+                showAlert(result.error || 'Google sign in failed');
+                googleSignIn.disabled = false;
+                googleSignIn.textContent = '🔵 Google';
+            }
+        });
+
+        // Check if already signed in
+        authService.onAuthStateChanged(async (user) => {
+            if (user) {
+                // Check if profile is complete
+                const profileComplete = await isProfileComplete(user.uid);
+
+                if (profileComplete) {
+                    window.location.href = '../dashboard/dashboard.html';
+                } else {
+                    window.location.href = 'complete-profile.html';
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

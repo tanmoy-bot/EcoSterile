@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoSterile - Dashboard</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../styles/theme.css">
+    <link rel="stylesheet" href="../styles/animations.css">
+    <link rel="stylesheet" href="../styles/dashboard.css">
+
+    <style>
+        /* Disease Classifier styles (local to dashboard) */
+        .disease-section { margin-top: 32px; padding: 20px; background: linear-gradient(180deg, rgba(16,185,129,0.04), rgba(6,182,212,0.02)); border-radius: 10px; border: 1px solid rgba(16,185,129,0.06); display: grid; grid-template-columns: 1fr 320px; gap: 18px; align-items: center; }
+        .disease-card { padding: 18px; background: var(--panel-bg, rgba(15,23,42,0.65)); border-radius: 10px; display:flex; flex-direction:column; min-height:200px; }
+        .disease-title { font-size: 1.125rem; color: #ecfeff; margin-bottom: 6px; }
+        .disease-desc { color: var(--text-muted, #cbd5e1); margin-bottom: 10px; }
+        .disease-instructions { color: #d1dce6; line-height: 1.5; margin-bottom: 12px; font-size: 0.95rem; }
+        .disease-visual { height: 180px; display:flex; align-items:center; justify-content:center; border-radius:8px; background: radial-gradient(circle at 20% 20%, rgba(6,182,212,0.08), transparent 18%), linear-gradient(135deg, rgba(16,185,129,0.04), rgba(6,182,212,0.01)); border: 1px solid rgba(255,255,255,0.02); }
+        .disease-actions { display:flex; gap:10px; justify-content:center; margin-top:auto; }
+        /* Interactive card styles for dashboard modal */
+        .disease-options { display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; }
+        .disease-option { flex:1 1 220px; background:rgba(15,23,42,0.6); padding:12px; border-radius:10px; cursor:pointer; border:1px solid transparent; transition:all 0.22s ease; display:flex; gap:12px; align-items:center; }
+        .disease-option:hover { transform:translateY(-6px); box-shadow:0 12px 30px rgba(2,6,23,0.5); border-color:rgba(16,185,129,0.12); }
+        .disease-option .left { font-size:28px; width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:8px; background:linear-gradient(135deg, rgba(16,185,129,0.08), rgba(6,182,212,0.04)); }
+        .disease-option .title { font-weight:700; color:#e6f6f5; }
+        .disease-option .subtitle { color:#9fb0c0; font-size:0.92rem; }
+        .disease-option.selected { border-color:rgba(6,182,212,0.28); background:linear-gradient(180deg, rgba(6,182,212,0.03), rgba(16,185,129,0.02)); }
+        .disease-option .check { margin-left:auto; font-size:18px; color:#34d399; display:none; }
+        .disease-option.selected .check { display:block; }
+        @media (max-width:900px){ .disease-section{ grid-template-columns: 1fr; } .disease-visual{ height: 140px; } }
+    </style>
+
+    <!-- Chart.js for pH graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="dashboard-wrapper">
+        <!-- FIXED Header (doesn't scroll) -->
+        <div class="dashboard-header">
+            <div id="headerComponent"></div>
+        </div>
+
+        <!-- Main Content Area (scrollable) -->
+        <div class="dashboard-content">
+            <div class="dashboard-body">
+                <!-- Weather Card as part of scrollable content -->
+                <div class="weather-card-wrapper">
+                    <div class="weather-card">
+                        <div class="weather-icon" id="weatherIcon">☀️</div>
+                        <div class="weather-info">
+                            <div class="weather-temp" id="weatherTemp">25°C</div>
+                            <div class="weather-desc" id="weatherDesc">Clear</div>
+                            <div class="weather-location" id="weatherLocation">Loading...</div>
+                        </div>
+                        <div class="weather-details">
+                            <div class="weather-detail-item">
+                                <span class="detail-label">Humidity</span>
+                                <span class="detail-value" id="weatherHumidity">--</span>
+                            </div>
+                            <div class="weather-detail-item">
+                                <span class="detail-label">Wind Speed</span>
+                                <span class="detail-value" id="weatherWind">-- km/h</span>
+                            </div>
+                            <div class="weather-detail-item">
+                                <span class="detail-label">📍 Farm Location</span>
+                                <span class="detail-value" id="farmLocation">Loading...</span>
+                            </div>
+                            <div class="weather-detail-item">
+                                <span class="detail-label">📅 Last Visit</span>
+                                <span class="detail-value" id="lastVisit">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Status Indicators -->
+                <div id="statusComponent"></div>
+
+                <!-- pH Monitoring Panel -->
+                <section class="ph-monitoring-panel">
+                    <h2 style="margin-top: 0;">📊 Real-time pH Monitoring</h2>
+
+                    <div class="ph-display">
+                        <div class="ph-gauge">
+                            <div class="ph-value" id="phValue">7.0</div>
+                            <div class="ph-status" id="phStatus">🟢 Optimal</div>
+                            <div class="ph-scale">
+                                <div class="ph-indicator" id="phIndicator"></div>
+                            </div>
+                            <div style="font-size: 0.9rem; color: var(--text-tertiary);">
+                                <span id="optimalRangeDisplay">6.5 - 7.5</span>
+                            </div>
+                        </div>
+
+                        <div class="ph-info">
+                            <div class="ph-info-item">
+                                <div class="ph-info-label">Average pH</div>
+                                <div class="ph-info-value" id="avgPH">7.0</div>
+                            </div>
+                            <div class="ph-info-item">
+                                <div class="ph-info-label" id="phRangeLabel">pH Range (24h)</div>
+                                <div class="ph-info-value" id="phRange">6.8 - 7.2</div>
+                            </div>
+                            <div class="ph-info-item">
+                                <div class="ph-info-label">Basic Pump Uses</div>
+                                <div class="ph-info-value" id="basicPumpCount">0</div>
+                            </div>
+                            <div class="ph-info-item">
+                                <div class="ph-info-label">Acidic Pump Uses</div>
+                                <div class="ph-info-value" id="acidicPumpCount">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- pH Chart with Horizontal Scroll -->
+                    <div style="margin-top: var(--space-8);">
+                        <h4 style="margin-bottom: var(--space-4);">pH Trend Graph</h4>
+                        <div class="ph-chart-container">
+                            <div class="ph-chart-wrapper" id="phChartWrapper">
+                                <canvas id="phChart"></canvas>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: var(--space-4); margin-top: var(--space-4);">
+                            <button class="btn btn-secondary time-filter-btn" data-range="24h">24 Hours</button>
+                            <button class="btn btn-secondary time-filter-btn" data-range="7d">7 Days</button>
+                            <button class="btn btn-secondary time-filter-btn" data-range="30d">30 Days</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pump Activity Log -->
+                <section class="pump-log-section">
+                    <h3 class="section-title">⏱️ Pump Activity Timeline</h3>
+                    <div id="pumpLogComponent"></div>
+                </section>
+
+                <!-- Crop Selection -->
+                <section class="crop-selector">
+                    <h3 class="section-title">🌾 Crop Type Selection</h3>
+                    <div id="cropCardsComponent"></div>
+                </section>
+
+                <!-- Disease Classifier Section -->
+                <section class="disease-section" aria-labelledby="disease-heading">
+                    <div class="disease-card">
+                        <div class="disease-title" id="disease-heading">🌿 Crop Disease Classifier</div>
+                        <div class="disease-desc">Quickly identify common leaf diseases using your smartphone camera. The classifier
+                            provides a predicted label and confidence score to help you decide next steps.</div>
+
+                        <div class="disease-instructions">
+                            <strong>How to use</strong>
+                            <ol style="margin-top:8px; margin-left: 18px; color: var(--text-muted);">
+                                <li>Click <strong>Open Classifier</strong>.</li>
+                                <li>Allow camera access or upload a clear, focused photo of the affected area.</li>
+                                <li>Use natural light and center the diseased leaf for best results.</li>
+                                <li>Review the predicted label and confidence, then consult treatment guidance.</li>
+                            </ol>
+                        </div>
+
+                        <div class="disease-actions">
+                            <a href="https://smartphone.edgeimpulse.com/classifier.html?apiKey=ei_c19a64056146e76a860ed8f13b222f25a68474dd111149e36822b8f99062cd0a" target="_blank" rel="noopener noreferrer" class="btn btn-primary">🔬 Open Classifier</a>
+                            <a href="../auth/farmer-guide.html" class="btn btn-secondary">📘 Tips & Care</a>
+                        </div>
+                    </div>
+
+                    <div class="disease-visual" aria-hidden="true">
+                        <div style="text-align:center;">
+                            <div style="font-size:44px;">📷🌱</div>
+                            <div style="color:var(--text-muted); margin-top:8px;">On-device & fast inference</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Disease Selection Modal (dashboard) -->
+                <div id="diseaseModalDashboard" style="display:none; position:fixed; inset:0; background:rgba(2,6,23,0.6); align-items:center; justify-content:center; z-index:9999;"> 
+                    <div style="max-width:820px; width:92%; background:linear-gradient(180deg,#071024,#0b1220); border-radius:12px; padding:20px; border:1px solid rgba(16,185,129,0.08); box-shadow:0 20px 50px rgba(2,6,23,0.7); color:#e6f6f5;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+                            <h2 style="margin:0; font-size:1.25rem;">Select Observed Disease</h2>
+                            <button id="diseaseModalCloseDb" style="background:transparent; color:#94a3b8; border:none; font-size:1.25rem; cursor:pointer;">✕</button>
+                        </div>
+                        <p style="color:#cbd5e1; margin-top:8px;">If the classifier did not give a clear result, choose the disease you observed to get prevention and treatment guidance.</p>
+                        <div class="disease-options" role="list">
+                            <div class="disease-option" data-value="angular" role="listitem" tabindex="0">
+                                <div class="left">🟢</div>
+                                <div>
+                                    <div class="title">Angular Leaf Spot</div>
+                                    <div class="subtitle">Bacterial disease in cucurbits</div>
+                                </div>
+                                <div class="check">✔</div>
+                            </div>
+                            <div class="disease-option" data-value="beanrust" role="listitem" tabindex="0">
+                                <div class="left">🟠</div>
+                                <div>
+                                    <div class="title">Bean Rust</div>
+                                    <div class="subtitle">Fungal rust on beans</div>
+                                </div>
+                                <div class="check">✔</div>
+                            </div>
+                            <div class="disease-option" data-value="healthy" role="listitem" tabindex="0">
+                                <div class="left">✅</div>
+                                <div>
+                                    <div class="title">Healthy</div>
+                                    <div class="subtitle">No visible disease</div>
+                                </div>
+                                <div class="check">✔</div>
+                            </div>
+                        </div>
+                        <div id="diseaseAdviceDb" style="margin-top:16px; color:#d1dce6; line-height:1.5;"></div>
+                        <div style="display:flex; justify-content:center; gap:12px; margin-top:18px;"><button id="diseaseConfirmDb" class="btn btn-primary">Show Recommendation</button><button id="diseaseCancelDb" class="btn btn-secondary">Close</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Modal Container -->
+    <div id="contactModal"></div>
+
+    <!-- Scripts -->
+    <script type="module" src="dashboard.js"></script>
+        <script>
+        // Dashboard disease modal logic
+        (function(){
+            const openBtn = document.querySelector('a[href*="smartphone.edgeimpulse.com/classifier.html"]');
+            const modal = document.getElementById('diseaseModalDashboard');
+            const closeBtn = document.getElementById('diseaseModalCloseDb');
+            const cancelBtn = document.getElementById('diseaseCancelDb');
+            const confirmBtn = document.getElementById('diseaseConfirmDb');
+            const adviceEl = document.getElementById('diseaseAdviceDb');
+
+            function showModal(){ modal.style.display='flex'; window.scrollTo({top:0,behavior:'smooth'}); }
+            function hideModal(){ modal.style.display='none'; adviceEl.innerHTML=''; const r = modal.querySelectorAll('input[name="disease_db"]'); r.forEach(x=>x.checked=false); }
+
+            if(openBtn){
+                openBtn.addEventListener('click', function(e){
+                    const href = this.getAttribute('href'); window.open(href,'_blank','noopener'); setTimeout(showModal,1000); e.preventDefault();
+                });
+            }
+            closeBtn.addEventListener('click', hideModal);
+            cancelBtn.addEventListener('click', hideModal);
+
+            confirmBtn.addEventListener('click', function(){
+                // interactive card selection
+                const options = modal.querySelectorAll('.disease-option');
+                options.forEach(opt => { opt.addEventListener('click', ()=>{ options.forEach(o=>o.classList.remove('selected')); opt.classList.add('selected'); }); opt.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); opt.click(); } }); });
+                const sel = modal.querySelector('.disease-option.selected'); if(!sel){ adviceEl.innerHTML='<em style="color:#fca5a5;">Please select an option.</em>'; return; }
+                    const v = sel.getAttribute('data-value');
+                if(v==='angular'){
+                    adviceEl.innerHTML = `
+                        <h3 style="margin:0 0 8px 0; color:#d1fae5;">Angular Leaf Spot — Overview</h3>
+                        <p>Angular leaf spot is a bacterial disease caused by <em>Pseudomonas syringae</em> pv. <em>lachrymans</em>, common in cucurbits. It causes angular water-soaked spots that turn gray and necrotic.</p>
+                        <h4 style="color:#bdebf7; margin:8px 0 6px;">Prevention Strategies</h4>
+                        <ul><li>Use certified disease-free seeds or treat seeds (hot water 50°C for 30 min).</li><li>Rotate crops 2–3 years and improve air circulation.</li><li>Avoid overhead watering; water in morning.</li></ul>
+                        <h4 style="color:#bdebf7; margin:8px 0 6px;">Treatments & Management</h4>
+                        <p>Use neem, baking soda, garlic sprays or copper (organic-approved) when needed. Prune infected parts, disinfect tools, and destroy debris at season end.</p>
+                    `;
+                } else if(v==='beanrust'){
+                    adviceEl.innerHTML = `
+                        <h3 style="margin:0 0 8px 0; color:#d1fae5;">Bean Rust — Overview</h3>
+                        <p>Bean rust, caused by <em>Uromyces</em> spp., shows as pustules on leaf undersides that turn powdery brown; severe infections lead to defoliation and yield loss.</p>
+                        <h4 style="color:#bdebf7; margin:8px 0 6px;">Prevention Strategies</h4>
+                        <ul><li>Rotate crops 2–3 years away from legumes.</li><li>Space plants 6–12 in for airflow and use drip irrigation.</li><li>Plant resistant varieties when available.</li></ul>
+                        <h4 style="color:#bdebf7; margin:8px 0 6px;">Treatments & Management</h4>
+                        <p>Remove infected parts early, consider neem/sulfur or biofungicides; use strobilurin or copper fungicides per label if organics fail. Clean up debris and disinfect tools.</p>
+                    `;
+                } else {
+                    adviceEl.innerHTML = `<h3 style="margin:0 0 8px 0; color:#d1fae5;">Healthy — Guidance</h3><p>Your plant appears healthy. Keep best practices: spacing, morning watering, and monitor environment using EcoSterile (pH 6.0–7.0).</p>`;
+                }
+                adviceEl.scrollIntoView({behavior:'smooth'});
+            });
+        })();
+        </script>
+</body>
+
+</html>

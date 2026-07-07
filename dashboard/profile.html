@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoSterile - User Profile</title>
+    <link rel="stylesheet" href="../styles/theme.css">
+    <link rel="stylesheet" href="../styles/animations.css">
+    <link rel="stylesheet" href="../styles/dashboard.css">
+    <style>
+        /* ============= LAYOUT ============= */
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .profile-container {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* ============= BACK BUTTON ============= */
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 35px;
+            padding: 8px 0;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-4px);
+            opacity: 0.85;
+        }
+
+        /* ============= PROFILE CARD ============= */
+        .profile-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 35px;
+            margin-bottom: 35px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .profile-header {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        /* ============= AVATAR ============= */
+        .profile-avatar {
+            width: 140px;
+            height: 140px;
+            min-width: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 60px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ============= PROFILE INFO ============= */
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-info h1 {
+            margin: 0 0 10px 0;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .profile-email {
+            margin: 8px 0;
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .profile-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .profile-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ============= EDIT BUTTON ============= */
+        .edit-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .edit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .edit-btn:active {
+            transform: translateY(0);
+        }
+
+        .edit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* ============= EDIT FORM ============= */
+        .edit-form {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 35px;
+            margin-bottom: 35px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        .edit-form.show {
+            display: block;
+        }
+
+        .edit-form h2 {
+            margin: 0 0 30px 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* ============= FORM GROUPS ============= */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+            background: var(--card-bg);
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 8px;
+            color: var(--text-tertiary);
+            font-size: 12px;
+        }
+
+        /* ============= FORM ACTIONS ============= */
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-save {
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-save:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-save:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-cancel {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-cancel:hover {
+            background: var(--border-color);
+        }
+
+        /* ============= SPINNER ============= */
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ============= INFO GRID ============= */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            padding: 28px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .info-card h3 {
+            margin: 0 0 22px 0;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .info-item {
+            margin-bottom: 20px;
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .info-value {
+            color: var(--text-primary);
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        /* ============= SKELETON LOADER ============= */
+        .skeleton-loader {
+            display: none;
+        }
+
+        .skeleton-loader.show {
+            display: block;
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--border-color) 50%, var(--bg-secondary) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .skeleton-avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+        }
+
+        .skeleton-text {
+            height: 16px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        /* ============= HIDDEN CLASS ============= */
+        .hidden {
+            display: none !important;
+        }
+
+        /* ============= ANIMATIONS ============= */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ============= RESPONSIVE ============= */
+        @media (max-width: 768px) {
+            .profile-container {
+                padding: 20px 15px;
+            }
+
+            .profile-card {
+                padding: 25px;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .edit-btn {
+                position: static;
+                width: 100%;
+                margin-top: 20px;
+            }
+
+            .profile-info h1 {
+                font-size: 26px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-wrapper">
+        <div class="dashboard-header">
+            <div id="headerComponent"></div>
+        </div>
+
+        <div class="dashboard-content">
+            <div class="dashboard-body">
+                <div class="profile-container">
+                    <button id="backBtn" class="back-btn">← Back to Dashboard</button>
+
+                    <!-- Skeleton Loader -->
+                    <div id="skeletonLoader" class="skeleton-loader show">
+                        <div class="profile-card">
+                            <div style="display: flex; gap: 30px;">
+                                <div class="skeleton skeleton-avatar"></div>
+                                <div style="flex: 1;">
+                                    <div class="skeleton skeleton-text" style="width: 60%; height: 28px;"></div>
+                                    <div class="skeleton skeleton-text" style="width: 50%;"></div>
+                                    <div class="skeleton skeleton-text" style="width: 40%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- About EcoSterile -->
+                        <div class="info-card" style="margin-top:20px;">
+                            <h3>About EcoSterile</h3>
+                            <div class="info-item">
+                                <div class="info-value">EcoSterile began as a practical project to bring affordable, automated pH control to small and mid-scale farms. Our journey focuses on making reliable water chemistry management accessible — combining simple hardware, smart automation, and an intuitive dashboard.</div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Uses</span>
+                                <div class="info-value">Maintain ideal pH for crops, automate pump dosing, monitor environmental trends, and receive actionable alerts and treatment guidance.</div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Key Features</span>
+                                <div class="info-value">Real-time pH monitoring, automatic acidic/basic pump control, crop-specific optimal ranges, pump activity logs, responsive dashboard, dark/light themes, and an integrated AI assistant.</div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Platform & Integrations</span>
+                                <div class="info-value">Built with Firebase (Authentication, Realtime Database) for secure, real-time syncing. Integrated with Google services such as Google Search Console for site verification and analytics, and uses EdgeImpulse for on-device crop disease classification.</div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Why it matters</span>
+                                <div class="info-value">EcoSterile reduces manual monitoring, prevents crop stress from incorrect pH, saves chemicals, and helps farmers make data-driven decisions to increase yields and sustainability.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile Content -->
+                    <div id="profileContent" class="hidden">
+                        <!-- Profile Card -->
+                        <div class="profile-card">
+                            <div class="profile-header">
+                                <div class="profile-avatar">
+                                    <img id="avatarImg" style="display: none;">
+                                    <span id="avatarPlaceholder">👤</span>
+                                </div>
+                                <div class="profile-info">
+                                    <h1 id="displayName">Loading...</h1>
+                                    <p class="profile-email" id="userEmail">Loading...</p>
+                                    <div class="profile-meta">
+                                        <span class="profile-badge" id="roleBadge">User</span>
+                                    </div>
+                                </div>
+                                <button id="editBtn" class="edit-btn">✏️ Edit Profile</button>
+                            </div>
+                        </div>
+
+                        <!-- Edit Form -->
+                        <div id="editForm" class="edit-form">
+                            <h2>Edit Profile</h2>
+                            <div class="form-group">
+                                <label for="nameInput">Full Name</label>
+                                <input type="text" id="nameInput" placeholder="Enter your name">
+                            </div>
+                            <div class="form-group">
+                                <label for="photoInput">Photo URL</label>
+                                <input type="url" id="photoInput" placeholder="https://example.com/photo.jpg">
+                                <small>Leave empty to use default avatar</small>
+                            </div>
+                            <div class="form-actions">
+                                <button id="saveBtn" class="btn btn-save">
+                                    <span id="saveBtnText">Save Changes</span>
+                                    <span id="saveBtnSpinner" class="spinner" style="display: none;"></span>
+                                </button>
+                                <button id="cancelBtn" class="btn btn-cancel">Cancel</button>
+                            </div>
+                        </div>
+
+                        <!-- Info Cards -->
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <h3>Account Information</h3>
+                                <div class="info-item">
+                                    <span class="info-label">Email</span>
+                                    <div class="info-value" id="infoEmail">Loading...</div>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Role</span>
+                                    <div class="info-value" id="infoRole">Loading...</div>
+                                </div>
+                            </div>
+                            <div class="info-card">
+                                <h3>Activity</h3>
+                                <div class="info-item">
+                                    <span class="info-label">Created</span>
+                                    <div class="info-value" id="infoCreated">Loading...</div>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Last Visit</span>
+                                    <div class="info-value" id="infoLastVisit">Loading...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./profile.js"></script>
+</body>
+
+</html>

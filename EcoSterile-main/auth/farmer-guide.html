@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer's Guide - EcoSterile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f5f9;
+            line-height: 1.8;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(30, 41, 59, 0.9);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 40px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section h2 {
+            color: #10b981;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .section h3 {
+            color: #e2e8f0;
+            font-size: 1.3rem;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        .step {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 6px;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #10b981;
+            color: white;
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: #f1f5f9;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .step-content {
+            color: #cbd5e1;
+            flex: 1;
+        }
+
+        .note {
+            background: rgba(249, 115, 22, 0.1);
+            border-left: 4px solid #f97316;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 6px;
+            color: #cbd5e1;
+        }
+
+        .note-title {
+            color: #f97316;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .warning {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 6px;
+            color: #cbd5e1;
+        }
+
+        .warning-title {
+            color: #fca5a5;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .tip {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 6px;
+            color: #cbd5e1;
+        }
+
+        .tip-title {
+            color: #93c5fd;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .list-item {
+            margin: 12px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #cbd5e1;
+        }
+
+        .list-item:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .back-btn {
+            background: #334155;
+            border: 1px solid #475569;
+        }
+
+        .back-btn:hover {
+            background: #475569;
+        }
+
+        ul,
+        ol {
+            margin-left: 25px;
+            color: #cbd5e1;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .section h2 {
+                font-size: 1.4rem;
+            }
+
+            .section h3 {
+                font-size: 1.1rem;
+            }
+
+            .btn {
+                display: block;
+                margin: 10px 0;
+            }
+        }
+
+        .feature-list {
+            display: grid;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .feature-item {
+            background: rgba(16, 185, 129, 0.08);
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid rgba(16, 185, 129, 0.15);
+        }
+
+        .feature-item-title {
+            color: #10b981;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .feature-item-desc {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👨‍🌾 Farmer's Guide</h1>
+            <p>Step-by-Step Instructions for Operating EcoSterile</p>
+        </div>
+
+        <div class="content">
+            <!-- Getting Started Section -->
+            <div class="section">
+                <h2>🚀 Getting Started</h2>
+                <p>Welcome to EcoSterile! This guide will help you understand and use your pH monitoring system from the
+                    beginning.</p>
+
+                <h3>What is EcoSterile?</h3>
+                <p>EcoSterile is a smart system that automatically controls the pH level in your farm's water. It
+                    measures the acidity/alkalinity of water and adds chemicals automatically to keep it at the perfect
+                    level for your crops.</p>
+
+                <div class="note">
+                    <div class="note-title">📌 Important</div>
+                    <p>The pH measurements come from the EcoSterile Device (sensor) that you connect to your mobile
+                        through internet. Make sure your device is properly installed and connected.</p>
+                </div>
+            </div>
+
+            <!-- Device Setup Section -->
+            <div class="section">
+                <h2>🔧 Device Setup</h2>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <div class="step-title">Get Your EcoSterile Device</div>
+                    <div class="step-content">
+                        <p>You will receive an EcoSterile Device (sensor box) that measures the pH of water.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <div class="step-title">Connect the Sensor to Water</div>
+                    <div class="step-content">
+                        <p>Place the sensor probe into your water tank or irrigation system. Make sure it is fully
+                            submerged and properly secured.</p>
+                        <div class="warning">
+                            <div class="warning-title">⚠️ Warning</div>
+                            <p>Do NOT drop the sensor or apply excessive force. Handle it carefully to avoid damage.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <div class="step-title">Connect Device to WiFi/Internet</div>
+                    <div class="step-content">
+                        <p>The device needs internet connection to send data to your mobile. Follow the device
+                            instructions to connect it to your WiFi network.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <div class="step-title">Calibrate the Sensor (First Time Only)</div>
+                    <div class="step-content">
+                        <p>When first installed, calibrate your sensor using calibration solutions as per the device
+                            manual. This ensures accurate readings.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile App Section -->
+            <div class="section">
+                <h2>📱 Using the Mobile Dashboard</h2>
+
+                <h3>Step 1: Sign Up</h3>
+                <div class="list-item">Go to the Sign Up page</div>
+                <div class="list-item">Enter your full name, email, and password</div>
+                <div class="list-item">Select your farm location (State → District → Taluka)</div>
+                <div class="list-item">Click "Create Account"</div>
+
+                <h3>Step 2: Log In</h3>
+                <div class="list-item">Use your email and password to log in</div>
+                <div class="list-item">You'll see your personal dashboard</div>
+
+                <h3>Step 3: Select Your Crop</h3>
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <div class="step-title">Choose the Crop You're Growing</div>
+                    <div class="step-content">
+                        <p>The system has 50+ crops to choose from (Rice, Wheat, Tomato, etc.)</p>
+                        <p>Each crop has its own optimal pH range.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <div class="step-title">View Optimal pH Range</div>
+                    <div class="step-content">
+                        <p>Once you select your crop, the dashboard shows the ideal pH range.</p>
+                        <p>Example: Rice likes pH 6.5 - 7.0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Understanding the Dashboard -->
+            <div class="section">
+                <h2>📊 Understanding Your Dashboard</h2>
+
+                <h3>Main Dashboard Elements</h3>
+
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <div class="feature-item-title">🌡️ Current pH Reading</div>
+                        <div class="feature-item-desc">Shows the current pH level of your water in real-time. Green
+                            means GOOD, Red means OUT OF RANGE.</div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-item-title">📈 pH Trend Graph</div>
+                        <div class="feature-item-desc">Shows how pH has changed over the last 24 hours or longer. This
+                            helps you see if there are any problems.</div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-item-title">🔄 Pump Activity Log</div>
+                        <div class="feature-item-desc">Shows every time the automatic pump activated (when chemicals
+                            were added). You can see when and how much was pumped.</div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-item-title">⚙️ System Status</div>
+                        <div class="feature-item-desc">Shows if everything is working correctly (Device connected, Pumps
+                            ready, etc.)</div>
+                    </div>
+                </div>
+
+                <div class="tip">
+                    <div class="tip-title">💡 Tip</div>
+                    <p>Check your dashboard every morning to see the overnight pH changes. This helps you understand
+                        your water better.</p>
+                </div>
+            </div>
+
+            <!-- How the Automatic System Works -->
+            <div class="section">
+                <h2>🔬 Disease Classifier</h2>
+
+                <p>The Disease Classifier helps you quickly identify common leaf diseases using your smartphone camera or image upload. It uses a lightweight on-device model to provide a probable diagnosis and confidence score, then offers treatment and prevention guidance.</p>
+
+                <h3>How to use the Classifier</h3>
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <div class="step-title">Open the Classifier</div>
+                    <div class="step-content">From the dashboard, click <strong>Open Classifier</strong> (or use the assistant's 🔬 button). The classifier opens in a new tab and may request camera permission.</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <div class="step-title">Capture or Upload a Photo</div>
+                    <div class="step-content">Allow camera access and point your camera at the affected leaf, or upload a clear photo. Ensure the diseased area is centered, in focus, and well lit (natural daylight is best).</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <div class="step-title">Get Results</div>
+                    <div class="step-content">The model will return a predicted class and confidence. If the result is unclear, return to the dashboard — a disease selection modal will appear to let you manually choose the observed disease and view treatment guidance.</div>
+                </div>
+
+                <h3>Interpreting Results & Next Steps</h3>
+                <ul>
+                    <li>High confidence: follow the recommended treatments and cultural fixes shown in the modal.</li>
+                    <li>Low confidence or uncertain: take multiple photos from different angles or choose the disease manually in the dashboard modal.</li>
+                    <li>Always combine model advice with visual inspection and local agricultural guidance.</li>
+                </ul>
+
+                <div class="tip">
+                    <div class="tip-title">💡 Best Practices</div>
+                    <ul>
+                        <li>Center the leaf and avoid blurry images; background noise reduces accuracy.</li>
+                        <li>Photograph single leaves at a time for clearer predictions.</li>
+                        <li>Use the dashboard advice to learn prevention strategies and safe treatment options.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="section">
+                <h2>⚙️ How Automatic Pump Control Works</h2>
+
+                <p>Once you set your crop, the system automatically controls the pump:</p>
+
+                <ol>
+                    <li><strong>Measures pH:</strong> Every few seconds, the sensor reads the water pH</li>
+                    <li><strong>Compares with Optimal Range:</strong> Checks if pH is within the good range for your
+                        crop</li>
+                    <li><strong>Activates Pump if Needed:</strong>
+                        <ul>
+                            <li>If pH is TOO HIGH → Activates ACIDIC pump (to lower pH)</li>
+                            <li>If pH is TOO LOW → Activates BASIC pump (to raise pH)</li>
+                            <li>If pH is GOOD → Does nothing</li>
+                        </ul>
+                    </li>
+                    <li><strong>Logs Everything:</strong> Records each pump activation with time and amount</li>
+                </ol>
+
+                <div class="note">
+                    <div class="note-title">📌 Important</div>
+                    <p>The system will only activate pumps if the pH is significantly outside the ideal range. This
+                        prevents over-correction and saves chemicals.</p>
+                </div>
+            </div>
+
+            <!-- Daily Operations -->
+            <div class="section">
+                <h2>📅 Daily Operations (What You Need to Do)</h2>
+
+                <h3>Every Morning:</h3>
+                <div class="list-item">Open the EcoSterile app on your mobile</div>
+                <div class="list-item">Check if the current pH is GREEN (good) or RED (problem)</div>
+                <div class="list-item">Look at the pump log to see what happened overnight</div>
+
+                <h3>Every 2-3 Days:</h3>
+                <div class="list-item">Manually check the water pH with a test kit (optional but recommended)</div>
+                <div class="list-item">Compare with what the app shows to verify accuracy</div>
+
+                <h3>Every Week:</h3>
+                <div class="list-item">Check the 7-day pH trend graph</div>
+                <div class="list-item">Make sure chemical tanks are not empty</div>
+                <div class="list-item">Check that the device is still connected and working</div>
+
+                <h3>Every Month:</h3>
+                <div class="list-item">Clean the sensor probe gently with distilled water</div>
+                <div class="list-item">Check if sensor needs recalibration</div>
+                <div class="list-item">Review the full month's data and pump logs</div>
+            </div>
+
+            <!-- Troubleshooting -->
+            <div class="section">
+                <h2>🔧 Troubleshooting</h2>
+
+                <h3>Problem: Device Not Connected</h3>
+                <div class="step">
+                    <span class="step-number">❌</span>
+                    <div class="step-title">Solution</div>
+                    <div class="step-content">
+                        <ul>
+                            <li>Check if WiFi is working</li>
+                            <li>Restart the device</li>
+                            <li>Check internet connection is available</li>
+                            <li>Move closer to the WiFi router</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Problem: pH Reading Seems Wrong</h3>
+                <div class="step">
+                    <span class="step-number">❌</span>
+                    <div class="step-title">Solution</div>
+                    <div class="step-content">
+                        <ul>
+                            <li>Make sure sensor is fully submerged in water</li>
+                            <li>Sensor might need cleaning (use distilled water)</li>
+                            <li>Sensor might need recalibration</li>
+                            <li>Verify manually with a pH test kit</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Problem: Pump Not Activating</h3>
+                <div class="step">
+                    <span class="step-number">❌</span>
+                    <div class="step-title">Solution</div>
+                    <div class="step-content">
+                        <ul>
+                            <li>Check if chemical tanks have liquid</li>
+                            <li>Check if pump power is on</li>
+                            <li>pH might already be in optimal range</li>
+                            <li>Contact support if problem persists</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Safety Tips -->
+            <div class="section">
+                <h2>⚠️ Safety Tips</h2>
+
+                <div class="warning">
+                    <div class="warning-title">Important Safety Guidelines</div>
+                    <ul>
+                        <li>Always wear gloves when handling chemicals</li>
+                        <li>Keep pH chemicals away from children and animals</li>
+                        <li>Never mix different chemicals together</li>
+                        <li>Follow chemical storage instructions carefully</li>
+                        <li>If chemicals spill on skin, wash immediately with water</li>
+                        <li>Never taste or drink the water from the system</li>
+                        <li>Turn off the system before maintenance or cleaning</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Tips for Best Results -->
+            <div class="section">
+                <h2>💡 Tips for Best Results</h2>
+
+                <div class="tip">
+                    <div class="tip-title">Pro Tips</div>
+                    <ul>
+                        <li><strong>Keep chemicals fresh:</strong> Replace chemicals regularly to maintain effectiveness
+                        </li>
+                        <li><strong>Monitor trends:</strong> Look at weekly trends, not just daily readings</li>
+                        <li><strong>Water quality:</strong> Cleaner water needs fewer adjustments</li>
+                        <li><strong>Maintenance:</strong> Regular sensor cleaning prevents errors</li>
+                        <li><strong>Records:</strong> Keep crop records to learn what works best</li>
+                        <li><strong>Ask questions:</strong> Use the in-app chatbot assistant for help anytime</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Support -->
+            <div class="section">
+                <h2>📞 Need Help?</h2>
+                <p>If you have questions or need assistance:</p>
+                <div class="list-item">Click the 💬 Assistant button in the app to chat with our AI assistant</div>
+                <div class="list-item">Email us at: <strong>ar.tanmoy.2011@gmail.com</strong></div>
+                <div class="list-item">Report bugs or suggest improvements through the app</div>
+
+                <div class="note">
+                    <div class="note-title">📌 Note</div>
+                    <p>We typically respond to emails within 24 hours. Please be as detailed as possible when describing
+                        your issue.</p>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="button-container">
+                <a href="../auth/signin.html" class="btn">🚀 Go to Dashboard</a>
+                <a href="../index.html" class="btn back-btn">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

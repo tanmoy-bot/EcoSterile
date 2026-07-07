@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoSterile - Sign Up</title>
+    <link rel="stylesheet" href="../styles/theme.css">
+    <link rel="stylesheet" href="../styles/animations.css">
+    <style>
+        .auth-container {
+            display: flex;
+            min-height: 100vh;
+            background: #ffffff;
+        }
+
+        .auth-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: var(--space-8);
+        }
+
+        .auth-left {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: rgba(255, 255, 255, 0.9);
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-left::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .auth-left>div {
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-right {
+            background-color: #ffffff;
+        }
+
+        @media (min-width: 768px) {
+            .auth-left {
+                display: flex;
+            }
+
+            .auth-left>div {
+                max-width: 400px;
+            }
+
+            .auth-right {
+                flex: 1;
+            }
+        }
+
+        .auth-box {
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: var(--space-6);
+        }
+
+        .auth-logo {
+            font-size: 3rem;
+            margin-bottom: var(--space-4);
+        }
+
+        .auth-header h1 {
+            font-size: 1.75rem;
+            color: #111827;
+            margin-bottom: var(--space-2);
+            font-weight: 600;
+        }
+
+        .auth-header p {
+            color: #4b5563;
+            margin: 0;
+            font-weight: 400;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-4);
+        }
+
+        .form-divider {
+            display: flex;
+            align-items: center;
+            margin: var(--space-6) 0;
+            gap: 0;
+        }
+
+        .form-divider::before,
+        .form-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: #e5e7eb;
+        }
+
+        .form-divider-text {
+            color: #9ca3af;
+            font-size: 0.75rem;
+            padding: 0 var(--space-3);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: var(--space-3) var(--space-6);
+            border: 1px solid #d1d5db;
+            background-color: #ffffff;
+            border-radius: 8px;
+            color: #111827;
+            cursor: pointer;
+            transition: all var(--transition-base);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .social-btn:hover {
+            background-color: #f3f4f6;
+            border-color: #b5bcc4;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .social-btn img {
+            height: 20px;
+            width: auto;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: var(--space-6);
+            color: #4b5563;
+        }
+
+        .auth-footer a {
+            color: #10b981;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .auth-footer a:hover {
+            color: #059669;
+            text-decoration: underline;
+        }
+
+        .alert {
+            margin-bottom: var(--space-6);
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        .password-helper {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-top: var(--space-1);
+            margin-bottom: var(--space-2);
+        }
+
+        .password-strength {
+            margin-top: var(--space-2);
+            height: 3px;
+            background-color: #e5e7eb;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: var(--space-1);
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #ef4444;
+            transition: all 200ms ease;
+        }
+
+        .password-strength-bar.weak {
+            width: 33%;
+            background-color: #ef4444;
+        }
+
+        .password-strength-bar.medium {
+            width: 66%;
+            background-color: #f59e0b;
+        }
+
+        .password-strength-bar.strong {
+            width: 100%;
+            background-color: #10b981;
+        }
+
+        .password-strength-text {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #9ca3af;
+            margin-top: var(--space-1);
+            text-transform: capitalize;
+            min-height: 1rem;
+        }
+
+        .password-strength-text.weak {
+            color: #ef4444;
+        }
+
+        .password-strength-text.medium {
+            color: #f59e0b;
+        }
+
+        .password-strength-text.strong {
+            color: #10b981;
+        }
+
+        .location-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-3);
+            margin-bottom: var(--space-4);
+        }
+
+        .custom-dropdown {
+            position: relative;
+            width: 100%;
+        }
+
+        .dropdown-trigger {
+            width: 100%;
+            padding: 10px 12px;
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            color: #111827;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 150ms ease;
+            height: 40px;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dropdown-trigger:hover:not(:disabled) {
+            border-color: #10b981;
+            background-color: #ffffff;
+        }
+
+        .dropdown-trigger:focus {
+            outline: none;
+            border-color: #10b981;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        }
+
+        .dropdown-trigger:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #f3f4f6;
+        }
+
+        .dropdown-trigger-text {
+            flex: 1;
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dropdown-chevron {
+            width: 16px;
+            height: 16px;
+            margin-left: 8px;
+            transition: transform 150ms ease;
+            flex-shrink: 0;
+        }
+
+        .dropdown-trigger.open .dropdown-chevron {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-panel {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-top: 4px;
+            z-index: 1000;
+            display: none;
+            max-height: 280px;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .dropdown-panel.open {
+            display: flex;
+        }
+
+        .dropdown-search {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            flex-shrink: 0;
+        }
+
+        .dropdown-search input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background-color: #f9fafb;
+            color: #111827;
+            font-size: 0.875rem;
+            font-family: inherit;
+            transition: all 150ms ease;
+        }
+
+        .dropdown-search input:focus {
+            outline: none;
+            border-color: #10b981;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .dropdown-search input::placeholder {
+            color: #9ca3af;
+        }
+
+        .dropdown-options {
+            overflow-y: auto;
+            flex: 1;
+            padding: 4px 0;
+        }
+
+        .dropdown-option {
+            padding: 10px 12px;
+            color: #111827;
+            cursor: pointer;
+            transition: all 150ms ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dropdown-option:hover {
+            background-color: #f0fdf4;
+            color: #059669;
+        }
+
+        .dropdown-option.selected {
+            background-color: #d1fae5;
+            color: #047857;
+            font-weight: 500;
+        }
+
+        .dropdown-empty {
+            padding: 20px 12px;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.875rem;
+        }
+
+        .location-select .loading-indicator {
+            position: absolute;
+            right: var(--space-3);
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            border-radius: 50%;
+            border-top-color: #10b981;
+            animation: spin 1s linear infinite;
+            pointer-events: none;
+            display: none;
+            z-index: 1;
+        }
+
+        .location-select.loading .loading-indicator {
+            display: block;
+        }
+
+        .location-error {
+            color: #ef4444;
+            font-size: 0.75rem;
+            margin-top: var(--space-2);
+            display: none;
+        }
+
+        .location-error.show {
+            display: block;
+        }
+
+        .location-validation {
+            color: #10b981;
+            font-size: 0.75rem;
+            margin-top: var(--space-2);
+            display: none;
+        }
+
+        .location-validation.show {
+            display: block;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-2);
+            margin-top: var(--space-6);
+            margin-bottom: var(--space-4);
+            padding-top: var(--space-4);
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            min-width: 18px;
+            margin-top: 2px;
+            cursor: pointer;
+            accent-color: #10b981;
+        }
+
+        .checkbox-label {
+            font-size: 0.875rem;
+            color: #374151;
+            line-height: 1.5;
+        }
+
+        .checkbox-label a {
+            color: #10b981;
+            font-weight: 500;
+            text-decoration: underline;
+        }
+
+        .checkbox-label a:hover {
+            color: #059669;
+        }
+
+        .social-btn {
+            transition: all 150ms ease;
+        }
+
+        .btn-primary {
+            transition: all 150ms ease;
+        }
+
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .auth-panel {
+                padding: var(--space-6);
+            }
+
+            .auth-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .location-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-container">
+        <!-- Left Panel (Hidden on mobile) -->
+        <div class="auth-panel auth-left">
+            <div>
+                <h2
+                    style="font-size: 2rem; margin-bottom: var(--space-6); font-weight: 600; color: rgba(255, 255, 255, 0.95);">
+                    🌱 Join EcoSterile</h2>
+                <p
+                    style="font-size: 1.125rem; line-height: 1.8; color: rgba(255, 255, 255, 0.9); margin: 0 0 var(--space-8) 0;">
+                    Start monitoring your crops today with precision pH control and real-time analytics.
+                </p>
+                <div
+                    style="margin-top: var(--space-8); padding-top: var(--space-8); border-top: 1px solid rgba(255,255,255,0.1);">
+                    <div
+                        style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); color: rgba(255, 255, 255, 0.9);">
+                        <span>✓ No credit card required</span>
+                    </div>
+                    <div
+                        style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); color: rgba(255, 255, 255, 0.9);">
+                        <span>✓ 24/7 Support</span>
+                    </div>
+                    <div
+                        style="display: flex; align-items: center; gap: var(--space-3); color: rgba(255, 255, 255, 0.9);">
+                        <span>✓ Industrial-grade monitoring</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="auth-panel auth-right">
+            <div class="auth-box fade-in">
+                <div class="auth-header">
+                    <div class="auth-logo">🌿</div>
+                    <h1>Create Account</h1>
+                    <p>Join thousands of farmers worldwide</p>
+                </div>
+
+                <!-- Alert Messages -->
+                <div id="alertBox"></div>
+
+                <!-- Sign Up Form -->
+                <form id="signUpForm">
+                    <!-- Full Name -->
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" id="fullName" placeholder="Your full name" required>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" id="email" placeholder="you@example.com" required>
+                    </div>
+
+                    <!-- Location - Multi-level Dropdown -->
+                    <div style="grid-column: 1 / -1;">
+                        <label class="form-label">📍 Farm Location (India)</label>
+                        <div class="location-grid">
+                            <!-- State -->
+                            <div class="location-select" id="stateSelectContainer">
+                                <div class="custom-dropdown" id="stateDropdown">
+                                    <button type="button" class="dropdown-trigger" disabled>
+                                        <span class="dropdown-trigger-text">Select State</span>
+                                        <svg class="dropdown-chevron" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd"
+                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                    <div class="dropdown-panel">
+                                        <div class="dropdown-search">
+                                            <input type="text" placeholder="Search state…"
+                                                class="dropdown-search-input">
+                                        </div>
+                                        <div class="dropdown-options"></div>
+                                    </div>
+                                </div>
+                                <div class="loading-indicator"></div>
+                                <div class="location-error" id="stateError"></div>
+                            </div>
+
+                            <!-- District -->
+                            <div class="location-select" id="districtSelectContainer">
+                                <div class="custom-dropdown" id="districtDropdown">
+                                    <button type="button" class="dropdown-trigger" disabled>
+                                        <span class="dropdown-trigger-text">Select District</span>
+                                        <svg class="dropdown-chevron" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd"
+                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                    <div class="dropdown-panel">
+                                        <div class="dropdown-search">
+                                            <input type="text" placeholder="Search district…"
+                                                class="dropdown-search-input">
+                                        </div>
+                                        <div class="dropdown-options"></div>
+                                    </div>
+                                </div>
+                                <div class="loading-indicator"></div>
+                                <div class="location-error" id="districtError"></div>
+                            </div>
+
+                            <!-- Taluka -->
+                            <div class="location-select" id="talukaSelectContainer">
+                                <div class="custom-dropdown" id="talukaDropdown">
+                                    <button type="button" class="dropdown-trigger" disabled>
+                                        <span class="dropdown-trigger-text">Select Taluka</span>
+                                        <svg class="dropdown-chevron" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd"
+                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                    <div class="dropdown-panel">
+                                        <div class="dropdown-search">
+                                            <input type="text" placeholder="Search taluka…"
+                                                class="dropdown-search-input">
+                                        </div>
+                                        <div class="dropdown-options"></div>
+                                    </div>
+                                </div>
+                                <div class="loading-indicator"></div>
+                                <div class="location-error" id="talukaError"></div>
+                            </div>
+                        </div>
+                        <div class="location-validation" id="locationValidation">✓ Location selected</div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <div class="password-helper">Minimum 8 characters</div>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                        <div class="password-strength">
+                            <div id="passwordStrengthBar" class="password-strength-bar"></div>
+                        </div>
+                        <div class="password-strength-text" id="passwordStrengthText"></div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" id="confirmPassword" placeholder="••••••••" required>
+                    </div>
+
+                    <!-- Terms & Privacy -->
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="termsCheck" required>
+                        <label for="termsCheck" class="checkbox-label">
+                            I agree to the <a href="terms-conditions.html" target="_blank">Terms of Service</a> and <a
+                                href="privacy-policy.html" target="_blank">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <!-- Sign Up Button -->
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: var(--space-4);">
+                        <span id="btnText">Create Account</span>
+                        <span id="spinner" class="spinner" style="display: none;"></span>
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <div class="form-divider">
+                    <span class="form-divider-text">OR</span>
+                </div>
+
+                <!-- Social Sign Up -->
+                <div class="social-buttons">
+                    <button type="button" class="social-btn" id="googleSignUp">
+                        <img src="https://freepnglogo.com/images/all_img/google-logo-2025-6ffb.png" alt="Google">
+                        <span>Continue with Google</span>
+                    </button>
+                </div>
+
+                <!-- Sign In Link -->
+                <div class="auth-footer">
+                    Already have an account? <a href="signin.html">Sign in here</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { authService } from '../services/firebase.js';
+        import { db } from '../services/firebase.js';
+        import {
+            ref,
+            set,
+        } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+        import { CustomDropdown } from '../components/CustomDropdown.js';
+
+        // ====================================
+        // Custom Dropdown Components
+        // ====================================
+        let stateDropdown, districtDropdown, talukaDropdown;
+
+        // ====================================
+        // Static Location Data (No API Calls - No CORS Issues)
+        // Single unified JSON file structure:
+        // /data/indiaLocations.json
+        // Hierarchy: India → States → Districts → Talukas
+        // ====================================
+
+        const LocationSelector = {
+            state: { dropdown: null, error: null, container: null },
+            district: { dropdown: null, error: null, container: null },
+            taluka: { dropdown: null, error: null, container: null },
+
+            locationData: null, // Loaded once from indiaLocations.json
+
+            selected: {
+                state: null,
+                district: null,
+                taluka: null,
+            },
+
+            async init() {
+                // Initialize custom dropdowns
+                this.state.dropdown = stateDropdown = new CustomDropdown(document.getElementById('stateDropdown'));
+                this.state.error = document.getElementById('stateError');
+                this.state.container = document.getElementById('stateSelectContainer');
+
+                this.district.dropdown = districtDropdown = new CustomDropdown(document.getElementById('districtDropdown'));
+                this.district.error = document.getElementById('districtError');
+                this.district.container = document.getElementById('districtSelectContainer');
+
+                this.taluka.dropdown = talukaDropdown = new CustomDropdown(document.getElementById('talukaDropdown'));
+                this.taluka.error = document.getElementById('talukaError');
+                this.taluka.container = document.getElementById('talukaSelectContainer');
+
+                // Load indiaLocations.json once
+                await this.loadLocationData();
+
+                // Event listeners for dropdowns
+                this.state.dropdown.onChange = () => this.onStateChange();
+                this.district.dropdown.onChange = () => this.onDistrictChange();
+                this.taluka.dropdown.onChange = () => this.onTalukaChange();
+            },
+
+            async loadLocationData() {
+                try {
+                    console.log('📍 Loading location data from: /data/indiaLocations.json');
+                    this.showLoading('state');
+
+                    const response = await fetch('../data/indiaLocations.json');
+                    if (!response.ok) {
+                        throw new Error(`Failed to load indiaLocations.json: ${response.status}`);
+                    }
+
+                    this.locationData = await response.json();
+                    if (!this.locationData || !this.locationData.India) {
+                        throw new Error('Invalid location data format');
+                    }
+
+                    await this.populateStates();
+                    this.hideLoading('state');
+                    console.log('✅ Location data loaded successfully');
+                } catch (error) {
+                    console.error('❌ Failed to load location data:', error);
+                    this.showError('state', 'Failed to load location data. Please refresh the page.');
+                    this.hideLoading('state');
+                }
+            },
+
+            async populateStates() {
+                try {
+                    if (!this.locationData || !this.locationData.India) {
+                        throw new Error('Location data not loaded');
+                    }
+
+                    const states = Object.keys(this.locationData.India);
+                    if (!Array.isArray(states) || states.length === 0) {
+                        throw new Error('Invalid states data');
+                    }
+
+                    this.state.dropdown.setOptions(states);
+                    this.state.dropdown.setDisabled(false);
+                    console.log(`✅ ${states.length} states loaded`);
+                } catch (error) {
+                    console.error('❌ Failed to populate states:', error);
+                    this.showError('state', 'Failed to load states.');
+                }
+            },
+
+            populateDistricts(stateName) {
+                try {
+                    if (!this.locationData || !this.locationData.India[stateName]) {
+                        throw new Error(`State ${stateName} not found`);
+                    }
+
+                    console.log(`📍 Loading districts for: ${stateName}`);
+                    this.showLoading('district');
+
+                    const districts = Object.keys(this.locationData.India[stateName]);
+                    if (!Array.isArray(districts) || districts.length === 0) {
+                        throw new Error(`No districts found for ${stateName}`);
+                    }
+
+                    this.district.dropdown.clear();
+                    this.district.dropdown.setOptions(districts);
+                    this.district.dropdown.setDisabled(false);
+                    this.hideLoading('district');
+                    console.log(`✅ ${districts.length} districts loaded for ${stateName}`);
+                } catch (error) {
+                    console.error('❌ Failed to load districts:', error);
+                    this.showError('district', 'Failed to load districts.');
+                    this.hideLoading('district');
+                }
+            },
+
+            populateTalukas(stateName, districtName) {
+                try {
+                    if (!this.locationData || !this.locationData.India[stateName] || !this.locationData.India[stateName][districtName]) {
+                        throw new Error(`District ${districtName} not found in ${stateName}`);
+                    }
+
+                    console.log(`📍 Loading talukas for: ${districtName}`);
+                    this.showLoading('taluka');
+
+                    const talukas = Object.keys(this.locationData.India[stateName][districtName]);
+                    if (!Array.isArray(talukas) || talukas.length === 0) {
+                        throw new Error(`No talukas found for ${districtName}`);
+                    }
+
+                    this.taluka.dropdown.clear();
+                    this.taluka.dropdown.setOptions(talukas);
+                    this.taluka.dropdown.setDisabled(false);
+                    this.hideLoading('taluka');
+                    console.log(`✅ ${talukas.length} talukas loaded for ${districtName}`);
+                } catch (error) {
+                    console.error('❌ Failed to load talukas:', error);
+                    this.showError('taluka', 'Failed to load talukas.');
+                    this.hideLoading('taluka');
+                }
+            },
+
+            showLoading(level) {
+                this[level].container.classList.add('loading');
+            },
+
+            hideLoading(level) {
+                this[level].container.classList.remove('loading');
+            },
+
+            showError(level, message) {
+                this[level].error.textContent = message;
+                this[level].error.classList.add('show');
+            },
+
+            hideError(level) {
+                this[level].error.classList.remove('show');
+            },
+
+            onStateChange() {
+                if (!this.state.dropdown.getValue()) return;
+
+                const selectedStateName = this.state.dropdown.getValue();
+                this.selected.state = selectedStateName;
+                console.log('📍 State selected:', selectedStateName);
+
+                // Reset dependent fields
+                this.selected.district = null;
+                this.selected.taluka = null;
+
+                this.district.dropdown.clear();
+                this.taluka.dropdown.clear();
+                this.district.dropdown.setDisabled(false);
+                this.taluka.dropdown.setDisabled(true);
+
+                // Load districts for selected state
+                this.populateDistricts(selectedStateName);
+                this.updateValidation();
+            },
+
+            onDistrictChange() {
+                if (!this.district.dropdown.getValue()) return;
+
+                const selectedStateName = this.selected.state;
+                const selectedDistrictName = this.district.dropdown.getValue();
+                this.selected.district = selectedDistrictName;
+                console.log('📍 District selected:', selectedDistrictName);
+
+                // Reset dependent field
+                this.selected.taluka = null;
+
+                this.taluka.dropdown.clear();
+                this.taluka.dropdown.setDisabled(false);
+
+                // Load talukas for selected district
+                this.populateTalukas(selectedStateName, selectedDistrictName);
+                this.updateValidation();
+            },
+
+            onTalukaChange() {
+                if (!this.taluka.dropdown.getValue()) return;
+
+                const selectedTalukaName = this.taluka.dropdown.getValue();
+                this.selected.taluka = selectedTalukaName;
+                console.log('📍 Taluka selected:', selectedTalukaName);
+
+                this.updateValidation();
+            },
+
+            updateValidation() {
+                const validationMsg = document.getElementById('locationValidation');
+                if (this.isComplete()) {
+                    validationMsg.classList.add('show');
+                } else {
+                    validationMsg.classList.remove('show');
+                }
+            },
+
+            isComplete() {
+                return !!(this.selected.state && this.selected.district && this.selected.taluka);
+            },
+
+            getSelected() {
+                return this.isComplete() ? this.selected : null;
+            }
+        };
+
+        // ====================================
+        // Form Elements
+        // ====================================
+        const form = document.getElementById('signUpForm');
+        const fullNameInput = document.getElementById('fullName');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const termsCheck = document.getElementById('termsCheck');
+        const alertBox = document.getElementById('alertBox');
+        const btnText = document.getElementById('btnText');
+        const spinner = document.getElementById('spinner');
+        const googleSignUp = document.getElementById('googleSignUp');
+        const passwordStrengthBar = document.getElementById('passwordStrengthBar');
+
+        // Show Alert
+        function showAlert(message, type = 'error') {
+            const alertClass = type === 'success' ? 'alert-success' : type === 'warning' ? 'alert-warning' : 'alert-danger';
+            alertBox.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
+            setTimeout(() => {
+                alertBox.innerHTML = '';
+            }, 5000);
+        }
+        // Password Strength Indicator
+        passwordInput.addEventListener('input', () => {
+            const password = passwordInput.value;
+            let strength = 'weak';
+
+            if (password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password)) {
+                strength = 'strong';
+            } else if (password.length >= 6) {
+                strength = 'medium';
+            }
+
+            passwordStrengthBar.className = `password-strength-bar ${strength}`;
+
+            // Update strength text display
+            const strengthText = document.getElementById('passwordStrengthText');
+            if (password.length > 0) {
+                strengthText.textContent = strength;
+                strengthText.className = `password-strength-text ${strength}`;
+            } else {
+                strengthText.textContent = '';
+                strengthText.className = 'password-strength-text';
+            }
+        });
+
+        // Sign Up Form Submit
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const fullName = fullNameInput.value.trim();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            const locationData = LocationSelector.getSelected();
+
+            // Validation
+            if (!fullName || !email || !locationData || !password || !confirmPassword) {
+                showAlert('Please fill in all fields including location');
+                console.log('🔴 Validation failed:', {
+                    fullName: !!fullName,
+                    email: !!email,
+                    location: !!locationData,
+                    password: !!password,
+                    confirmPassword: !!confirmPassword
+                });
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showAlert('Passwords do not match');
+                return;
+            }
+
+            if (password.length < 6) {
+                showAlert('Password must be at least 6 characters');
+                return;
+            }
+
+            if (!termsCheck.checked) {
+                showAlert('Please accept the Terms of Service');
+                return;
+            }
+
+            // Show loading state
+            form.classList.add('loading');
+            btnText.textContent = 'Creating account...';
+            spinner.style.display = 'inline-block';
+
+            console.log('📝 Form data being sent to signup:', {
+                email,
+                fullName,
+                location: locationData
+            });
+
+            const result = await authService.signUp(email, password, {
+                fullName: fullName,
+                location: `${locationData.taluka}, ${locationData.district}, ${locationData.state}`
+            });
+
+            if (result.success) {
+                console.log("✅ Sign-up successful, user created:", result.user.uid);
+
+                // EXPLICIT STRUCTURED LOCATION WRITE
+                try {
+                    console.log("📍 Writing structured location to database...");
+                    const userId = result.user.uid;
+                    const now = new Date().toISOString();
+
+                    // Build structured location - State, District, and Taluka
+                    const structuredLocation = {
+                        country: "India",
+                        state: { name: locationData.state },
+                        district: { name: locationData.district },
+                        taluka: { name: locationData.taluka },
+                        updatedAt: now
+                    };
+
+                    await set(ref(db, `users/${userId}/location`), structuredLocation);
+
+                    console.log("✅ Location written successfully:", structuredLocation);
+                    showAlert('Account created successfully! Redirecting...', 'success');
+
+                    // Wait additional time to ensure Firebase syncs all data
+                    setTimeout(() => {
+                        window.location.href = '../dashboard/dashboard.html';
+                    }, 2500);
+                } catch (locationError) {
+                    console.error("❌ CRITICAL: Location write failed:", locationError.message);
+                    showAlert('Error saving location. Please try again.', 'error');
+                    form.classList.remove('loading');
+                    btnText.textContent = 'Create Account';
+                    spinner.style.display = 'none';
+                }
+            } else {
+                showAlert(result.error || 'Sign up failed');
+                form.classList.remove('loading');
+                btnText.textContent = 'Create Account';
+                spinner.style.display = 'none';
+            }
+        });
+
+        // Google Sign Up
+        googleSignUp.addEventListener('click', async () => {
+            googleSignUp.disabled = true;
+            googleSignUp.textContent = '⏳ Signing up...';
+
+            const result = await authService.signInWithGoogle();
+
+            if (result.success) {
+                showAlert('Account created successfully! Redirecting...', 'success');
+                // Wait additional time to ensure Firebase syncs all data
+                setTimeout(() => {
+                    window.location.href = '../dashboard/dashboard.html';
+                }, 2500);
+            } else {
+                showAlert(result.error || 'Google sign up failed');
+                googleSignUp.disabled = false;
+                googleSignUp.textContent = '🔵 Google';
+            }
+        });
+
+        // Check if already signed in
+        authService.onAuthStateChanged((user) => {
+            if (user) {
+                window.location.href = '../dashboard/dashboard.html';
+            }
+        });
+
+        // Initialize Location Selector on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            LocationSelector.init();
+            console.log('📍 Location selector initialized');
+        });
+    </script>
+</body>
+
+</html>

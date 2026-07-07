@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - EcoSterile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .admin-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            margin-bottom: 5px;
+            background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #e2e8f0;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.8);
+            color: #f1f5f9;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #ef4444;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+            background: rgba(15, 23, 42, 0.95);
+        }
+
+        input::placeholder {
+            color: #64748b;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .google-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            border-radius: 8px;
+            color: #60a5fa;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .google-btn:hover:not(:disabled) {
+            background: rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            display: inline-block;
+            width: 40%;
+            height: 1px;
+            background: rgba(16, 185, 129, 0.1);
+            vertical-align: middle;
+            margin: 0 8px;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #86efac;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link a:hover {
+            color: #10b981;
+        }
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.05);
+            border-left: 3px solid #ef4444;
+            padding: 12px;
+            margin-top: 20px;
+            border-radius: 4px;
+            color: #cbd5e1;
+            font-size: 0.85rem;
+        }
+
+        .warning-box strong {
+            color: #ef4444;
+        }
+
+        @media (max-width: 500px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .admin-icon {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="admin-icon">🔐</div>
+            <h1>Admin Panel</h1>
+            <p class="subtitle">Secure Access Required</p>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <form id="adminLoginForm">
+            <div class="form-group">
+                <label for="email">Admin Email</label>
+                <input type="email" id="email" placeholder="admin@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="login-btn" id="loginBtn">
+                Sign In
+            </button>
+        </form>
+
+        <div class="divider">OR</div>
+
+        <button type="button" class="google-btn" id="googleBtn">
+            🔵 Sign in with Google
+        </button>
+
+        <div class="warning-box">
+            <strong>⚠️ Warning:</strong> This is a restricted admin panel. Unauthorized access attempts are logged.
+        </div>
+
+        <div class="back-link">
+            <a href="../index.html">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            signInWithPopup,
+            GoogleAuthProvider,
+            onAuthStateChanged,
+        } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+        // Firebase Configuration (same as main app)
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6G8DgCBqA9lFMlKfGIC_JCEaZU-GuPxs",
+            authDomain: "eco-sterile.firebaseapp.com",
+            databaseURL: "https://eco-sterile-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "eco-sterile",
+            storageBucket: "eco-sterile.firebasestorage.app",
+            messagingSenderId: "429228597840",
+            appId: "1:429228597840:web:45c0f163c578480fc2a755",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        // Admin email whitelist
+        const ADMIN_EMAILS = [
+            "admin@ecosterile.com",
+            "dev@ecosterile.com",
+            "support@ecosterile.com",
+            "ayushmanchoudhury30@gmail.com",
+            "tanmoykanoo30@gmail.com"
+            // Add more admin emails as needed
+        ];
+
+        // DOM Elements
+        const form = document.getElementById("adminLoginForm");
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const loginBtn = document.getElementById("loginBtn");
+        const googleBtn = document.getElementById("googleBtn");
+        const errorMsg = document.getElementById("errorMessage");
+        const successMsg = document.getElementById("successMessage");
+
+        // Check if user is already logged in
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                if (isAdminUser(user.email)) {
+                    window.location.href = "admin-dashboard.html";
+                } else {
+                    // Non-admin user logged in
+                    signOut(auth).then(() => {
+                        showError("❌ You do not have admin access. Please contact your administrator.");
+                    });
+                }
+            }
+        });
+
+        // Check if email is admin
+        function isAdminUser(email) {
+            return ADMIN_EMAILS.includes(email.toLowerCase());
+        }
+
+        // Show error message
+        function showError(message) {
+            errorMsg.textContent = message;
+            errorMsg.classList.add("show");
+            successMsg.classList.remove("show");
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            successMsg.textContent = message;
+            successMsg.classList.add("show");
+            errorMsg.classList.remove("show");
+        }
+
+        // Email/Password Login
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            // Validate admin email
+            if (!isAdminUser(email)) {
+                showError("❌ Only authorized admin emails can access this panel.");
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span class="loading-spinner"></span>Signing in...';
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Double-check admin status
+                if (isAdminUser(user.email)) {
+                    showSuccess("✅ Login successful! Redirecting to admin dashboard...");
+                    setTimeout(() => {
+                        window.location.href = "admin-dashboard.html";
+                    }, 1500);
+                } else {
+                    showError("❌ Your email is not authorized for admin access.");
+                    await auth.signOut();
+                }
+            } catch (error) {
+                let errorMessage = "❌ Login failed";
+                if (error.code === "auth/user-not-found") {
+                    errorMessage = "❌ Admin account not found";
+                } else if (error.code === "auth/wrong-password") {
+                    errorMessage = "❌ Incorrect password";
+                } else if (error.code === "auth/invalid-email") {
+                    errorMessage = "❌ Invalid email format";
+                } else if (error.code === "auth/too-many-requests") {
+                    errorMessage = "❌ Too many failed attempts. Please try again later.";
+                }
+                showError(errorMessage);
+                console.error("Login error:", error);
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = "Sign In";
+            }
+        });
+
+        // Google Sign In
+        googleBtn.addEventListener("click", async () => {
+            googleBtn.disabled = true;
+            googleBtn.innerHTML = '<span class="loading-spinner"></span>Signing in...';
+
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                const user = result.user;
+
+                // Verify admin status
+                if (isAdminUser(user.email)) {
+                    showSuccess("✅ Login successful! Redirecting...");
+                    setTimeout(() => {
+                        window.location.href = "admin-dashboard.html";
+                    }, 1500);
+                } else {
+                    showError("❌ Your Google account is not authorized for admin access.");
+                    await auth.signOut();
+                }
+            } catch (error) {
+                if (error.code !== "auth/popup-closed-by-user") {
+                    showError("❌ Google sign-in failed. Please try again.");
+                    console.error("Google sign-in error:", error);
+                }
+            } finally {
+                googleBtn.disabled = false;
+                googleBtn.innerHTML = '🔵 Sign in with Google';
+            }
+        });
+
+        // Import signOut for cleanup
+        import { signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+    </script>
+</body>
+
+</html>

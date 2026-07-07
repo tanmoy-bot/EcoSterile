@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - EcoSterile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f5f9;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+        }
+
+        .header-left h1 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+            background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .admin-user {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #fca5a5;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(16, 185, 129, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #10b981;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filters-section {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(16, 185, 129, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .filter-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-item label {
+            color: #e2e8f0;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .filter-item input,
+        .filter-item select {
+            padding: 10px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 6px;
+            background: rgba(15, 23, 42, 0.8);
+            color: #f1f5f9;
+            font-size: 0.9rem;
+        }
+
+        .filter-item input:focus,
+        .filter-item select:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
+        }
+
+        .apply-filters-btn {
+            padding: 10px 20px;
+            background: #10b981;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .apply-filters-btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .export-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .export-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(16, 185, 129, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .export-card:hover {
+            border-color: #10b981;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .export-card.active {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .export-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .export-format {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 5px;
+        }
+
+        .export-desc {
+            color: #cbd5e1;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+        }
+
+        .export-btn {
+            width: 100%;
+            padding: 12px;
+            background: #10b981;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .export-btn:hover:not(:disabled) {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .export-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .data-preview {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(16, 185, 129, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .preview-content {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(16, 185, 129, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            font-size: 0.85rem;
+            color: #10b981;
+        }
+
+        .preview-empty {
+            color: #64748b;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .status-message {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .status-message.error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            display: block;
+        }
+
+        .status-message.success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #86efac;
+            display: block;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .security-info {
+            background: rgba(239, 68, 68, 0.05);
+            border-left: 3px solid #ef4444;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 30px;
+            color: #cbd5e1;
+            font-size: 0.85rem;
+        }
+
+        .security-info strong {
+            color: #ef4444;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .header-left h1 {
+                font-size: 1.5rem;
+            }
+
+            .filter-group {
+                grid-template-columns: 1fr;
+            }
+
+            .export-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>🔐 Admin Dashboard</h1>
+                <p class="admin-user">Admin User: <span id="adminEmail">--</span></p>
+            </div>
+            <button class="logout-btn" id="logoutBtn">🚪 Logout</button>
+        </div>
+
+        <div class="status-message" id="statusMessage"></div>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-number" id="userCount">--</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-number" id="readingCount">--</div>
+                <div class="stat-label">pH Readings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔄</div>
+                <div class="stat-number" id="pumpCount">--</div>
+                <div class="stat-label">Pump Logs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📍</div>
+                <div class="stat-number" id="locationCount">--</div>
+                <div class="stat-label">Locations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💬</div>
+                <div class="stat-number" id="chatbotCount">--</div>
+                <div class="stat-label">Chatbot Logs</div>
+            </div>
+        </div>
+
+        <!-- Data Filters Section -->
+        <div class="filters-section">
+            <div class="section-title">📅 Data Filters (Optional)</div>
+            <div class="filter-group">
+                <div class="filter-item">
+                    <label for="dataTypeFilter">Data Type</label>
+                    <select id="dataTypeFilter">
+                        <option value="all">All Data</option>
+                        <option value="users">Users Only</option>
+                        <option value="phReadings">pH Readings Only</option>
+                        <option value="pumpLogs">Pump Logs Only</option>
+                        <option value="locations">Locations Only</option>
+                        <option value="chatbotLogs">Chatbot Logs Only</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="startDate">Start Date (Optional)</label>
+                    <input type="date" id="startDate">
+                </div>
+                <div class="filter-item">
+                    <label for="endDate">End Date (Optional)</label>
+                    <input type="date" id="endDate">
+                </div>
+                <div>
+                    <button class="apply-filters-btn" id="applyFiltersBtn">🔍 Apply Filters</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Section -->
+        <div>
+            <div class="section-title">📥 Export Data - All Formats</div>
+            <div class="export-grid">
+                <!-- Chatbot Data Export -->
+                <div class="export-card">
+                    <div class="export-icon">💬</div>
+                    <div class="export-format">Chatbot Interactions</div>
+                    <div class="export-desc">All chatbot Q&A logs in JSON format</div>
+                    <button class="export-btn" data-format="chatbot-json">Export Chatbot Data</button>
+                </div>
+
+                <!-- JSON Complete -->
+                <div class="export-card">
+                    <div class="export-icon">📋</div>
+                    <div class="export-format">Complete JSON</div>
+                    <div class="export-desc">Full nested structure with all PH readings and pump logs</div>
+                    <button class="export-btn" data-format="json-complete">Export Complete JSON</button>
+                </div>
+
+                <!-- NDJSON (ML) -->
+                <div class="export-card">
+                    <div class="export-icon">🤖</div>
+                    <div class="export-format">ML Training (NDJSON)</div>
+                    <div class="export-desc">Optimized for machine learning frameworks</div>
+                    <button class="export-btn" data-format="ndjson">Export NDJSON</button>
+                </div>
+
+                <!-- CSV All Readings -->
+                <div class="export-card">
+                    <div class="export-icon">📊</div>
+                    <div class="export-format">Readings CSV</div>
+                    <div class="export-desc">All sensor readings as individual rows</div>
+                    <button class="export-btn" data-format="csv-readings">Export CSV</button>
+                </div>
+
+                <!-- Flattened JSON -->
+                <div class="export-card">
+                    <div class="export-icon">🔄</div>
+                    <div class="export-format">Flattened JSON</div>
+                    <div class="export-desc">User-centered with readings arrays</div>
+                    <button class="export-btn" data-format="json-flattened">Export Flattened</button>
+                </div>
+
+                <!-- Original JSON -->
+                <div class="export-card">
+                    <div class="export-icon">📄</div>
+                    <div class="export-format">JSON (Original)</div>
+                    <div class="export-desc">Original filtered JSON format</div>
+                    <button class="export-btn" data-format="json">Export as JSON</button>
+                </div>
+
+                <!-- Original CSV -->
+                <div class="export-card">
+                    <div class="export-icon">📑</div>
+                    <div class="export-format">CSV (Original)</div>
+                    <div class="export-desc">Original CSV summary format</div>
+                    <button class="export-btn" data-format="csv">Export as CSV</button>
+                </div>
+
+                <!-- PDF -->
+                <div class="export-card">
+                    <div class="export-icon">📄</div>
+                    <div class="export-format">PDF Report</div>
+                    <div class="export-desc">PDF summary report</div>
+                    <button class="export-btn" data-format="pdf">Export as PDF</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Preview -->
+        <div class="data-preview">
+            <div class="section-title">👀 Data Preview</div>
+            <div class="preview-content" id="previewContent">
+                <div class="preview-empty">Loading data preview...</div>
+            </div>
+        </div>
+
+        <!-- Security Info -->
+        <div class="security-info">
+            <strong>🔒 Security Notice:</strong> All data exports are performed client-side. No data is sent to external
+            servers. Your admin session is secure and logged. Exports are timestamped for audit purposes.
+        </div>
+    </div>
+
+    <!-- External Libraries (CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import {
+            getAuth,
+            onAuthStateChanged,
+            signOut,
+        } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+        import {
+            getDatabase,
+            ref,
+            get,
+            query,
+            orderByChild,
+        } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6G8DgCBqA9lFMlKfGIC_JCEaZU-GuPxs",
+            authDomain: "eco-sterile.firebaseapp.com",
+            databaseURL: "https://eco-sterile-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "eco-sterile",
+            storageBucket: "eco-sterile.firebasestorage.app",
+            messagingSenderId: "429228597840",
+            appId: "1:429228597840:web:45c0f163c578480fc2a755",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        // Global state
+        let currentUser = null;
+        let isAdmin = false;
+        let allData = {
+            users: {},
+            phReadings: {},
+            pumpLogs: {},
+            locations: {},
+            chatbotLogs: {}
+        };
+
+        // DOM Elements
+        const adminEmailEl = document.getElementById("adminEmail");
+        const logoutBtn = document.getElementById("logoutBtn");
+        const statusMsg = document.getElementById("statusMessage");
+        const userCountEl = document.getElementById("userCount");
+        const readingCountEl = document.getElementById("readingCount");
+        const pumpCountEl = document.getElementById("pumpCount");
+        const locationCountEl = document.getElementById("locationCount");
+        const previewContent = document.getElementById("previewContent");
+        const applyFiltersBtn = document.getElementById("applyFiltersBtn");
+        const exportBtns = document.querySelectorAll(".export-btn");
+
+        // Check authentication
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = "admin-login.html";
+                return;
+            }
+
+            currentUser = user;
+            adminEmailEl.textContent = user.email;
+
+            // Verify admin from Realtime Database
+            try {
+                const adminRef = ref(db, `admins/${currentUser.uid}`);
+                const adminSnap = await get(adminRef);
+
+                if (adminSnap.exists() && adminSnap.val() === true) {
+                    isAdmin = true;
+                    await loadAllData();
+                } else {
+                    showStatus("❌ Admin access required", "error");
+                    setTimeout(async () => {
+                        await signOut(auth);
+                        window.location.href = "admin-login.html";
+                    }, 2000);
+                }
+            } catch (error) {
+                showStatus(`❌ Admin verification failed: ${error.message}`, "error");
+                console.error("Admin check error:", error);
+                setTimeout(async () => {
+                    await signOut(auth);
+                    window.location.href = "admin-login.html";
+                }, 2000);
+            }
+        });
+
+        // Logout
+        logoutBtn.addEventListener("click", async () => {
+            await signOut(auth);
+            window.location.href = "admin-login.html";
+        });
+
+        // Initialize export buttons - disabled until data loads
+        exportBtns.forEach(btn => {
+            btn.disabled = true;
+            btn.style.opacity = "0.5";
+            btn.style.cursor = "not-allowed";
+        });
+
+        // Load all data from Firebase
+        async function loadAllData() {
+            try {
+                showStatus("🔄 Loading data...", "info");
+
+                // Load all users
+                const usersSnap = await get(ref(db, "users"));
+                if (usersSnap.exists()) {
+                    allData.users = usersSnap.val();
+
+                    // Extract location data and readings from users
+                    Object.keys(allData.users).forEach(userId => {
+                        const user = allData.users[userId];
+
+                        // Safely extract location data
+                        if (user && user.location) {
+                            allData.locations[userId] = user.location;
+                        }
+
+                        // Extract pH readings
+                        if (user && user.phReadings && typeof user.phReadings === "object") {
+                            allData.phReadings = { ...allData.phReadings, ...user.phReadings };
+                        }
+
+                        // Extract pump logs
+                        if (user && user.pumpLogs && typeof user.pumpLogs === "object") {
+                            allData.pumpLogs = { ...allData.pumpLogs, ...user.pumpLogs };
+                        }
+                    });
+                } else {
+                    console.warn("⚠️ No users found in database");
+                    allData.users = {};
+                }
+
+                // Load chatbot logs
+                try {
+                    const chatbotSnap = await get(ref(db, "chatbotLogs"));
+                    if (chatbotSnap.exists()) {
+                        allData.chatbotLogs = chatbotSnap.val();
+                    } else {
+                        console.log("ℹ️ No chatbot logs found");
+                        allData.chatbotLogs = {};
+                    }
+                } catch (err) {
+                    console.warn("⚠️ Could not load chatbot logs:", err);
+                    allData.chatbotLogs = {};
+                }
+
+                updateStats();
+                updatePreview();
+
+                // Enable export buttons after data loads
+                exportBtns.forEach(btn => {
+                    btn.disabled = false;
+                    btn.style.opacity = "1";
+                    btn.style.cursor = "pointer";
+                });
+
+                showStatus("✅ Data loaded successfully", "success");
+            } catch (error) {
+                console.error("Data load error:", error);
+
+                // Check if it's a permission error
+                if (error.code === "PERMISSION_DENIED" || error.message.includes("Permission denied")) {
+                    showStatus("❌ Permission denied: Admin access required to load data", "error");
+                } else {
+                    showStatus("❌ Failed to load data: " + error.message, "error");
+                }
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const usersCount = Object.keys(allData.users).length;
+            const readingsCount = Object.keys(allData.phReadings).length;
+            const pumpLogsCount = Object.keys(allData.pumpLogs).length;
+            const locationsCount = Object.keys(allData.locations).length;
+
+            // Count chatbot logs
+            let chatbotCount = 0;
+            Object.values(allData.chatbotLogs).forEach(userLogs => {
+                if (typeof userLogs === "object") {
+                    chatbotCount += Object.keys(userLogs).length;
+                }
+            });
+
+            userCountEl.textContent = usersCount;
+            readingCountEl.textContent = readingsCount;
+            pumpCountEl.textContent = pumpLogsCount;
+            locationCountEl.textContent = locationsCount;
+            // Update chatbot count if element exists
+            const chatbotCountEl = document.getElementById("chatbotCount");
+            if (chatbotCountEl) chatbotCountEl.textContent = chatbotCount;
+        }
+
+        // Update data preview
+        function updatePreview() {
+            const dataTypeFilter = document.getElementById("dataTypeFilter").value;
+            let previewData = {};
+
+            if (dataTypeFilter === "all" || dataTypeFilter === "users") {
+                previewData.users = allData.users;
+            }
+            if (dataTypeFilter === "all" || dataTypeFilter === "locations") {
+                previewData.locations = allData.locations;
+            }
+            if (dataTypeFilter === "all" || dataTypeFilter === "phReadings") {
+                previewData.phReadings = allData.phReadings;
+            }
+            if (dataTypeFilter === "all" || dataTypeFilter === "pumpLogs") {
+                previewData.pumpLogs = allData.pumpLogs;
+            }
+            if (dataTypeFilter === "all" || dataTypeFilter === "chatbotLogs") {
+                previewData.chatbotLogs = allData.chatbotLogs;
+            }
+
+            const preview = JSON.stringify(previewData, null, 2).substring(0, 1000);
+            previewContent.innerHTML = preview.length > 0 ?
+                `<pre>${escapeHtml(preview)}${Object.keys(previewData).reduce((sum, key) => sum + Object.keys(previewData[key] || {}).length, 0) > 100 ? '\n... (more data)' : ''}</pre>` :
+                '<div class="preview-empty">No data available</div>';
+        }
+
+        // Apply filters
+        applyFiltersBtn.addEventListener("click", updatePreview);
+        document.getElementById("dataTypeFilter").addEventListener("change", updatePreview);
+
+        // Export buttons
+        exportBtns.forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const format = btn.dataset.format;
+                btn.disabled = true;
+                btn.innerHTML = '<span class="loading-spinner"></span>Exporting...';
+
+                try {
+                    await exportData(format);
+                    showStatus(`✅ Successfully exported as ${format.toUpperCase()}`, "success");
+                } catch (error) {
+                    showStatus(`❌ Export failed: ${error.message}`, "error");
+                    console.error("Export error:", error);
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = `Export as ${format.toUpperCase()}`;
+                }
+            });
+        });
+
+        // Get filtered data
+        function getFilteredData() {
+            const dataType = document.getElementById("dataTypeFilter").value;
+            const startDate = document.getElementById("startDate").value;
+            const endDate = document.getElementById("endDate").value;
+
+            let filteredData = {};
+
+            // Filter by data type
+            if (dataType === "all") {
+                filteredData = { ...allData };
+            } else {
+                filteredData[dataType] = allData[dataType] || {};
+            }
+
+            // Filter by date if provided
+            if (startDate || endDate) {
+                const start = startDate ? new Date(startDate).getTime() : 0;
+                const end = endDate ? new Date(endDate).getTime() : Infinity;
+
+                Object.keys(filteredData).forEach(key => {
+                    if (typeof filteredData[key] === "object") {
+                        Object.keys(filteredData[key]).forEach(subKey => {
+                            const item = filteredData[key][subKey];
+                            const timestamp = item.timestamp ? new Date(item.timestamp).getTime() : 0;
+                            if (timestamp < start || timestamp > end) {
+                                delete filteredData[key][subKey];
+                            }
+                        });
+                    }
+                });
+            }
+
+            return filteredData;
+        }
+
+        // Export data function
+        async function exportData(format) {
+            const timestamp = new Date().toISOString().replace(/[:.]/g, "-").substring(0, 19);
+
+            switch (format) {
+                // Chatbot export
+                case "chatbot-json":
+                    exportChatbotJSON(allData.chatbotLogs, timestamp);
+                    break;
+                // New comprehensive formats
+                case "json-complete":
+                    exportJSONComplete(allData.users, timestamp);
+                    break;
+                case "ndjson":
+                    exportNDJSON(allData.users, timestamp);
+                    break;
+                case "csv-readings":
+                    exportCSVReadings(allData.users, timestamp);
+                    break;
+                case "json-flattened":
+                    exportJSONFlattened(allData.users, timestamp);
+                    break;
+                // Original formats
+                case "json":
+                    const filteredData = getFilteredData();
+                    exportJSON(filteredData, timestamp);
+                    break;
+                case "csv":
+                    const filteredData2 = getFilteredData();
+                    exportCSV(filteredData2, timestamp);
+                    break;
+                case "pdf":
+                    const filteredData3 = getFilteredData();
+                    await exportPDF(filteredData3, timestamp);
+                    break;
+                default:
+                    throw new Error(`Unknown export format: ${format}`);
+            }
+        }
+
+        // Export Chatbot Logs as JSON
+        function exportChatbotJSON(chatbotLogs, timestamp) {
+            const formattedLogs = {};
+            let totalInteractions = 0;
+
+            Object.entries(chatbotLogs).forEach(([userId, userLogs]) => {
+                if (typeof userLogs === "object") {
+                    formattedLogs[userId] = Object.values(userLogs);
+                    totalInteractions += Object.keys(userLogs).length;
+                }
+            });
+
+            const exportData = {
+                exportedAt: new Date().toISOString(),
+                totalUsers: Object.keys(chatbotLogs).length,
+                totalInteractions: totalInteractions,
+                data: formattedLogs
+            };
+
+            const content = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([content], { type: "application/json" });
+            downloadFile(blob, `ecosterile-chatbot-logs-${timestamp}.json`);
+        }
+
+        // NEW: Export Complete JSON (All data nested)
+        function exportJSONComplete(users, timestamp) {
+            const content = JSON.stringify(users, null, 2);
+            const blob = new Blob([content], { type: "application/json" });
+            downloadFile(blob, `ecosterile-complete-${timestamp}.json`);
+        }
+
+        // NEW: Export NDJSON (ML Training format)
+        function exportNDJSON(users, timestamp) {
+            let ndjson = '';
+            Object.entries(users).forEach(([userId, userData]) => {
+                const record = {
+                    userId,
+                    profile: userData.profile || {},
+                    location: userData.location || {},
+                    settings: userData.settings || {},
+                    phReadings: userData.phReadings ? Object.values(userData.phReadings) : [],
+                    pumpLogs: userData.pumpLogs ? Object.values(userData.pumpLogs) : []
+                };
+                ndjson += JSON.stringify(record) + '\n';
+            });
+            const blob = new Blob([ndjson], { type: "text/plain" });
+            downloadFile(blob, `ecosterile-ml-${timestamp}.ndjson`);
+        }
+
+        // NEW: Export CSV with all readings
+        function exportCSVReadings(users, timestamp) {
+            let csv = 'userId,userName,email,dataType,timestamp,value,country,state,district\n';
+            Object.entries(users).forEach(([userId, userData]) => {
+                const profile = userData.profile || {};
+                const location = userData.location || {};
+
+                // PH Readings
+                if (userData.phReadings) {
+                    Object.values(userData.phReadings).forEach(reading => {
+                        csv += `${userId},"${profile.name || ''}","${profile.email || ''}",PHReading,"${reading.timestamp || ''}",${reading.value || ''},"${location.country || ''}","${location.state || ''}","${location.district || ''}"\n`;
+                    });
+                }
+
+                // Pump Logs
+                if (userData.pumpLogs) {
+                    Object.values(userData.pumpLogs).forEach(log => {
+                        csv += `${userId},"${profile.name || ''}","${profile.email || ''}",PumpLog,"${log.timestamp || ''}","${log.status || log.pumpedAmount || ''}","${location.country || ''}","${location.state || ''}","${location.district || ''}"\n`;
+                    });
+                }
+            });
+            const blob = new Blob([csv], { type: "text/csv" });
+            downloadFile(blob, `ecosterile-readings-${timestamp}.csv`);
+        }
+
+        // NEW: Export Flattened JSON
+        function exportJSONFlattened(users, timestamp) {
+            const data = [];
+            Object.entries(users).forEach(([userId, userData]) => {
+                data.push({
+                    userId,
+                    profile: userData.profile || {},
+                    location: userData.location || {},
+                    settings: userData.settings || {},
+                    phReadings: userData.phReadings ? Object.values(userData.phReadings) : [],
+                    pumpLogs: userData.pumpLogs ? Object.values(userData.pumpLogs) : []
+                });
+            });
+            const content = JSON.stringify(data, null, 2);
+            const blob = new Blob([content], { type: "application/json" });
+            downloadFile(blob, `ecosterile-flattened-${timestamp}.json`);
+        }
+
+        // ORIGINAL: Export as JSON (Filtered)
+        function exportJSON(data, timestamp) {
+            const content = JSON.stringify(data, null, 2);
+            const blob = new Blob([content], { type: "application/json" });
+            downloadFile(blob, `ecosterile-export-${timestamp}.json`);
+        }
+
+        // ORIGINAL: Export as CSV (Filtered)
+        function exportCSV(data, timestamp) {
+            let csv = "Data Type,ID,Content\n";
+
+            Object.keys(data).forEach(type => {
+                const items = data[type];
+                if (typeof items === "object") {
+                    Object.keys(items).forEach(id => {
+                        const content = JSON.stringify(items[id]).replace(/"/g, '""');
+                        csv += `"${type}","${id}","${content}"\n`;
+                    });
+                }
+            });
+
+            const blob = new Blob([csv], { type: "text/csv" });
+            downloadFile(blob, `ecosterile-export-${timestamp}.csv`);
+        }
+
+        // ORIGINAL: Export as PDF
+        async function exportPDF(data, timestamp) {
+            try {
+                if (!window.jspdf || !window.jspdf.jsPDF) {
+                    throw new Error("PDF library not loaded. Please refresh the page and try again.");
+                }
+
+                const jsPDF = window.jspdf.jsPDF;
+                const doc = new jsPDF();
+
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+                let yPosition = 20;
+                const margin = 15;
+                const maxWidth = pageWidth - 2 * margin;
+
+                // Title
+                doc.setFontSize(18);
+                doc.setTextColor(16, 185, 129);
+                doc.text("EcoSterile Data Export Report", margin, yPosition);
+                yPosition += 15;
+
+                // Metadata
+                doc.setFontSize(10);
+                doc.setTextColor(100, 100, 100);
+                doc.text(`Export Date: ${new Date().toLocaleString()}`, margin, yPosition);
+                yPosition += 8;
+                doc.text(`Admin User: ${currentUser?.email || "Unknown"}`, margin, yPosition);
+                yPosition += 15;
+
+                // Statistics
+                doc.setFontSize(12);
+                doc.setTextColor(0, 0, 0);
+                doc.text("Database Statistics:", margin, yPosition);
+                yPosition += 10;
+
+                const stats = [
+                    [`Total Users: ${Object.keys(data.users || {}).length}`],
+                    [`Total pH Readings: ${Object.keys(data.phReadings || {}).length}`],
+                    [`Total Pump Logs: ${Object.keys(data.pumpLogs || {}).length}`],
+                    [`Total Locations: ${Object.keys(data.locations || {}).length}`]
+                ];
+
+                stats.forEach(stat => {
+                    if (yPosition > pageHeight - 20) {
+                        doc.addPage();
+                        yPosition = 20;
+                    }
+                    doc.setFontSize(10);
+                    doc.text(stat[0], margin, yPosition);
+                    yPosition += 8;
+                });
+
+                // Sample data
+                yPosition += 5;
+                doc.setFontSize(12);
+                doc.setTextColor(0, 0, 0);
+                doc.text("Data Summary:", margin, yPosition);
+                yPosition += 10;
+
+                const summaryText = JSON.stringify(data, null, 2).substring(0, 2000);
+                const splitText = doc.splitTextToSize(summaryText, maxWidth - 5);
+
+                splitText.forEach(line => {
+                    if (yPosition > pageHeight - 20) {
+                        doc.addPage();
+                        yPosition = 20;
+                    }
+                    doc.setFontSize(8);
+                    doc.setFont(undefined, "normal");
+                    doc.text(line, margin, yPosition);
+                    yPosition += 5;
+                });
+
+                // Footer
+                doc.setFontSize(8);
+                doc.setTextColor(150, 150, 150);
+                doc.text(`Page ${doc.getNumberOfPages()}`, pageWidth / 2, pageHeight - 10, { align: "center" });
+
+                doc.save(`ecosterile-export-${timestamp}.pdf`);
+            } catch (error) {
+                throw new Error(`PDF export failed: ${error.message}`);
+            }
+        }
+
+        // Helper functions
+        function downloadFile(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function showStatus(message, type) {
+            statusMsg.textContent = message;
+            statusMsg.className = `status-message ${type === "error" ? "error" : type === "success" ? "success" : ""}`;
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+    </script>
+</body>
+
+</html>

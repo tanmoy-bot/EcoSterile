@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Your Profile - EcoSterile</title>
+    <link rel="stylesheet" href="../styles/theme.css">
+    <link rel="stylesheet" href="../styles/animations.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            color-scheme: light;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #ffffff;
+            color: #111827;
+            min-height: 100vh;
+        }
+
+        .profile-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .profile-box {
+            width: 100%;
+            max-width: 420px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 40px 32px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-header {
+            margin-bottom: 32px;
+        }
+
+        .profile-header h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .profile-header p {
+            color: #4b5563;
+            font-size: 0.9rem;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+            animation: slideDown 0.3s ease-out;
+            border: 1px solid;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: #10b981;
+            color: #047857;
+        }
+
+        .form-section {
+            margin-bottom: 28px;
+        }
+
+        .form-section-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #9ca3af;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #111827;
+            font-weight: 500;
+            font-size: 0.875rem;
+            letter-spacing: -0.3px;
+        }
+
+        .required-indicator {
+            color: #ef4444;
+            margin-left: 4px;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            background: #f9fafb;
+            color: #111827;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 150ms ease;
+            line-height: 1.5;
+            height: 40px;
+        }
+
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .form-input:hover,
+        .form-select:hover {
+            border-color: #10b981;
+            background: #ffffff;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #10b981;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        }
+
+        .form-select {
+            cursor: pointer;
+            appearance: none;
+            padding-right: 36px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M5.5 7.5L10 13L14.5 7.5' stroke='%239ca3af' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-color: #f9fafb;
+            padding-right: 40px;
+        }
+
+        .form-select:hover {
+            background-color: #ffffff;
+        }
+
+        .form-select:focus {
+            background-color: #ffffff;
+        }
+
+        .form-select option {
+            background: #ffffff;
+            color: #111827;
+            padding: 8px 12px;
+        }
+
+        .form-select option:checked {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .form-select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #f3f4f6;
+        }
+
+        .location-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .location-grid.full {
+            grid-template-columns: 1fr;
+        }
+
+        .location-grid>.form-group {
+            margin-bottom: 0;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px 20px;
+            margin-top: 32px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 150ms ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            letter-spacing: -0.3px;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-submit:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .logout-link {
+            text-align: center;
+            margin-top: 28px;
+            padding-top: 24px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .logout-link a {
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 150ms ease;
+            letter-spacing: -0.2px;
+        }
+
+        .logout-link a:hover {
+            color: #10b981;
+            text-decoration: underline;
+        }
+
+        /* Custom Dropdown Styles */
+        .custom-dropdown {
+            position: relative;
+            width: 100%;
+        }
+
+        .dropdown-trigger {
+            width: 100%;
+            padding: 10px 12px;
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            color: #111827;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 150ms ease;
+            height: 40px;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dropdown-trigger:hover:not(:disabled) {
+            border-color: #10b981;
+            background-color: #ffffff;
+        }
+
+        .dropdown-trigger:focus {
+            outline: none;
+            border-color: #10b981;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        }
+
+        .dropdown-trigger:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #f3f4f6;
+        }
+
+        .dropdown-trigger-text {
+            flex: 1;
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dropdown-chevron {
+            width: 16px;
+            height: 16px;
+            margin-left: 8px;
+            transition: transform 150ms ease;
+            flex-shrink: 0;
+        }
+
+        .dropdown-trigger.open .dropdown-chevron {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-panel {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-top: 4px;
+            z-index: 1000;
+            display: none;
+            max-height: 280px;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .dropdown-panel.open {
+            display: flex;
+        }
+
+        .dropdown-search {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            flex-shrink: 0;
+        }
+
+        .dropdown-search input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background-color: #f9fafb;
+            color: #111827;
+            font-size: 0.875rem;
+            font-family: inherit;
+            transition: all 150ms ease;
+        }
+
+        .dropdown-search input:focus {
+            outline: none;
+            border-color: #10b981;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .dropdown-search input::placeholder {
+            color: #9ca3af;
+        }
+
+        .dropdown-options {
+            overflow-y: auto;
+            flex: 1;
+            padding: 4px 0;
+        }
+
+        .dropdown-option {
+            padding: 10px 12px;
+            color: #111827;
+            cursor: pointer;
+            transition: all 150ms ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dropdown-option:hover {
+            background-color: #f0fdf4;
+            color: #059669;
+        }
+
+        .dropdown-option.selected {
+            background-color: #d1fae5;
+            color: #047857;
+            font-weight: 500;
+        }
+
+        .dropdown-empty {
+            padding: 20px 12px;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .profile-box {
+                padding: 32px 24px;
+                max-width: 100%;
+            }
+
+            .profile-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .profile-header p {
+                font-size: 0.85rem;
+            }
+
+            .location-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="profile-container">
+        <div class="profile-box fade-in">
+            <div class="profile-header">
+                <h1>🌿 Complete Your Profile</h1>
+                <p>We need a few details to get you started</p>
+            </div>
+
+            <!-- Alert Messages -->
+            <div id="alertBox"></div>
+
+            <!-- Profile Form -->
+            <form id="profileForm">
+                <!-- Basic Information Section -->
+                <div class="form-section">
+                    <label class="form-section-title">Basic Information</label>
+
+                    <!-- Full Name -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            Full Name
+                            <span class="required-indicator">*</span>
+                        </label>
+                        <input type="text" id="fullName" class="form-input" placeholder="John Doe" required>
+                    </div>
+                </div>
+
+                <!-- Location Section -->
+                <div class="form-section">
+                    <label class="form-section-title">Location Details</label>
+                    <p style="color: #9ca3af; font-size: 0.8rem; margin: 0 0 16px 0; line-height: 1.4;">
+                        Select your State, District, and Taluka
+                    </p>
+
+                    <!-- State & District Grid -->
+                    <div class="location-grid">
+                        <!-- State Dropdown -->
+                        <div class="form-group">
+                            <label class="form-label">State <span class="required-indicator">*</span></label>
+                            <div class="custom-dropdown" id="stateDropdown">
+                                <button type="button" class="dropdown-trigger" disabled>
+                                    <span class="dropdown-trigger-text">Select State</span>
+                                    <svg class="dropdown-chevron" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                                <div class="dropdown-panel">
+                                    <div class="dropdown-search">
+                                        <input type="text" placeholder="Search state…" class="dropdown-search-input">
+                                    </div>
+                                    <div class="dropdown-options"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- District Dropdown -->
+                        <div class="form-group">
+                            <label class="form-label">District <span class="required-indicator">*</span></label>
+                            <div class="custom-dropdown" id="districtDropdown">
+                                <button type="button" class="dropdown-trigger" disabled>
+                                    <span class="dropdown-trigger-text">Select District</span>
+                                    <svg class="dropdown-chevron" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                                <div class="dropdown-panel">
+                                    <div class="dropdown-search">
+                                        <input type="text" placeholder="Search district…" class="dropdown-search-input">
+                                    </div>
+                                    <div class="dropdown-options"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Taluka Full Width -->
+                    <div class="location-grid full">
+                        <!-- Taluka Dropdown -->
+                        <div class="form-group">
+                            <label class="form-label">Taluka <span class="required-indicator">*</span></label>
+                            <div class="custom-dropdown" id="talukaDropdown">
+                                <button type="button" class="dropdown-trigger" disabled>
+                                    <span class="dropdown-trigger-text">Select Taluka</span>
+                                    <svg class="dropdown-chevron" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                                <div class="dropdown-panel">
+                                    <div class="dropdown-search">
+                                        <input type="text" placeholder="Search taluka…" class="dropdown-search-input">
+                                    </div>
+                                    <div class="dropdown-options"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <span id="btnText">Continue to Dashboard</span>
+                    <span id="spinner" class="spinner" style="display: none;"></span>
+                </button>
+            </form>
+
+            <!-- Logout Link -->
+            <div class="logout-link">
+                <a href="#" id="logoutLink">Sign out</a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { authService } from '../services/firebase.js';
+        import { getDatabase, ref, set } from 'https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js';
+        import { CustomDropdown } from '../components/CustomDropdown.js';
+
+        const form = document.getElementById('profileForm');
+        const fullNameInput = document.getElementById('fullName');
+        const alertBox = document.getElementById('alertBox');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const spinner = document.getElementById('spinner');
+
+        // Initialize custom dropdowns
+        let stateDropdown, districtDropdown, talukaDropdown;
+        let indiaData = {};
+        let selectedLocation = {
+            state: null,
+            district: null,
+            taluka: null
+        };
+
+        // Show Alert
+        function showAlert(message, type = 'danger') {
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+            alertBox.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
+            if (type !== 'success') {
+                setTimeout(() => {
+                    alertBox.innerHTML = '';
+                }, 5000);
+            }
+        }
+
+        // Make logout globally available
+        window.logoutUser = async function (e) {
+            e.preventDefault();
+            await authService.signOut();
+            window.location.href = 'signin.html';
+        };
+
+        // Attach logout event listener
+        document.getElementById('logoutLink').addEventListener('click', window.logoutUser);
+
+        // Load India location data
+        async function loadLocationData() {
+            try {
+                const response = await fetch('../data/indiaLocations.json');
+                const data = await response.json();
+                indiaData = data.India || {};
+
+                // Populate states in dropdown
+                const states = Object.keys(indiaData).sort();
+                stateDropdown.setOptions(states);
+                stateDropdown.setDisabled(false);
+            } catch (error) {
+                console.error('Error loading location data:', error);
+                showAlert('Failed to load location data. Please refresh the page.');
+            }
+        }
+
+        // Handle state selection
+        function onStateChange(selectedState) {
+            selectedLocation.state = selectedState;
+            selectedLocation.district = null;
+            selectedLocation.taluka = null;
+
+            districtDropdown.clear();
+            talukaDropdown.clear();
+            talukaDropdown.setDisabled(true);
+
+            if (selectedState) {
+                const districts = Object.keys(indiaData[selectedState] || {}).sort();
+                districtDropdown.setOptions(districts);
+                districtDropdown.setDisabled(false);
+            } else {
+                districtDropdown.setDisabled(true);
+            }
+        }
+
+        // Handle district selection
+        function onDistrictChange(selectedDistrict) {
+            selectedLocation.district = selectedDistrict;
+            selectedLocation.taluka = null;
+
+            talukaDropdown.clear();
+
+            if (selectedDistrict && selectedLocation.state) {
+                const talukas = Object.keys(indiaData[selectedLocation.state][selectedDistrict] || {}).sort();
+                talukaDropdown.setOptions(talukas);
+                talukaDropdown.setDisabled(false);
+            } else {
+                talukaDropdown.setDisabled(true);
+            }
+        }
+
+        // Handle taluka selection
+        function onTalukaChange(selectedTaluka) {
+            selectedLocation.taluka = selectedTaluka;
+        }
+
+        // Initialize dropdowns
+        function initializeDropdowns() {
+            stateDropdown = new CustomDropdown(document.getElementById('stateDropdown'));
+            districtDropdown = new CustomDropdown(document.getElementById('districtDropdown'));
+            talukaDropdown = new CustomDropdown(document.getElementById('talukaDropdown'));
+
+            stateDropdown.onChange = onStateChange;
+            districtDropdown.onChange = onDistrictChange;
+            talukaDropdown.onChange = onTalukaChange;
+        }
+
+        // Pre-fill name if available
+        authService.onAuthStateChanged((user) => {
+            if (!user) {
+                window.location.href = 'signin.html';
+                return;
+            }
+
+            if (user.displayName) {
+                fullNameInput.value = user.displayName;
+            }
+
+            // Initialize dropdowns after auth check
+            initializeDropdowns();
+            loadLocationData();
+        });
+
+        // Form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const fullName = fullNameInput.value.trim();
+            const state = selectedLocation.state;
+            const district = selectedLocation.district;
+            const taluka = selectedLocation.taluka;
+
+            // Validation
+            if (!fullName) {
+                showAlert('Please enter your full name');
+                return;
+            }
+
+            if (!state || !district || !taluka) {
+                showAlert('Please select your location (State, District, Taluka)');
+                return;
+            }
+
+            // Get current user
+            const user = authService.getCurrentUser?.() ||
+                (typeof firebase !== 'undefined' && firebase.auth().currentUser);
+
+            if (!user) {
+                showAlert('User not authenticated');
+                return;
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            btnText.textContent = 'Saving...';
+            spinner.style.display = 'inline-block';
+
+            try {
+                const db = getDatabase();
+                const now = new Date().toISOString();
+
+                // Save profile
+                await set(ref(db, `users/${user.uid}/profile`), {
+                    name: fullName,
+                    email: user.email,
+                    provider: user.providerData?.[0]?.providerId || 'email',
+                    completedAt: now
+                });
+
+                // Save location
+                await set(ref(db, `users/${user.uid}/location`), {
+                    country: 'India',
+                    state: state,
+                    district: district,
+                    taluka: taluka,
+                    updatedAt: now
+                });
+
+                showAlert('Profile completed successfully! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = '../dashboard/dashboard.html';
+                }, 2000);
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                showAlert(`Error: ${error.message || 'Failed to save profile'}`);
+                submitBtn.disabled = false;
+                btnText.textContent = 'Complete Profile';
+                spinner.style.display = 'none';
+            }
+        });
+
+        // Load location data on page load
+        loadLocationData();
+    </script>
+</body>
+
+</html>

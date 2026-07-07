@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoSterile - Settings</title>
+    <link rel="stylesheet" href="../styles/theme.css">
+    <link rel="stylesheet" href="../styles/animations.css">
+    <link rel="stylesheet" href="../styles/dashboard.css">
+    <style>
+        /* ============= LAYOUT ============= */
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .settings-container {
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* ============= BACK BUTTON ============= */
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 35px;
+            padding: 8px 0;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-4px);
+            opacity: 0.85;
+        }
+
+        /* ============= SETTINGS GRID ============= */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+
+        .settings-left {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* ============= SETTINGS CARD ============= */
+        .settings-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .settings-card h2 {
+            margin: 0 0 12px 0;
+            color: var(--text-primary);
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .settings-card>p {
+            margin: 0 0 25px 0;
+            color: var(--text-tertiary);
+            font-size: 13px;
+        }
+
+        /* ============= SETTINGS OPTION ============= */
+        .settings-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+            gap: 20px;
+        }
+
+        .settings-option:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .option-info {
+            flex: 1;
+        }
+
+        .option-label {
+            display: block;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 15px;
+        }
+
+        .option-desc {
+            color: var(--text-tertiary);
+            font-size: 13px;
+            margin: 0;
+        }
+
+        /* ============= TOGGLE SWITCH ============= */
+        .toggle-switch {
+            display: inline-flex;
+            cursor: pointer;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            display: none;
+        }
+
+        .toggle-slider {
+            width: 56px;
+            height: 32px;
+            background-color: #d1d5db;
+            border-radius: 16px;
+            position: relative;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            padding: 0 3px;
+        }
+
+        .toggle-slider::after {
+            content: '';
+            width: 26px;
+            height: 26px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            display: block;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch input:checked+.toggle-slider {
+            background-color: var(--primary-color);
+        }
+
+        .toggle-switch input:checked+.toggle-slider::after {
+            transform: translateX(24px);
+        }
+
+        /* ============= DROPDOWN SELECT ============= */
+        .option-label-wrapper {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .crop-select {
+            padding: 12px 16px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            min-width: 200px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .crop-select:hover {
+            border-color: var(--primary-color);
+        }
+
+        .crop-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+            background: var(--card-bg);
+        }
+
+        /* ============= CROP GRID ============= */
+        .crop-grid-container {
+            width: 100%;
+        }
+
+        .crop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .crop-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--card-bg);
+            text-align: center;
+        }
+
+        .crop-option:hover {
+            border-color: var(--primary-color);
+            background: var(--bg-secondary);
+            transform: translateY(-2px);
+        }
+
+        .crop-option.selected {
+            border-color: var(--primary-color);
+            background: rgba(16, 185, 129, 0.08);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .crop-option img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-bottom: 8px;
+        }
+
+        .crop-option-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+
+        /* ============= SAVE STATUS ============= */
+        .save-status {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 16px 24px;
+            border-radius: 8px;
+            background: #10b981;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            pointer-events: none;
+        }
+
+        .save-status.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ============= SKELETON LOADER ============= */
+        .skeleton-loader {
+            display: none;
+        }
+
+        .skeleton-loader.show {
+            display: block;
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--border-color) 50%, var(--bg-secondary) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .skeleton-text {
+            height: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        /* ============= HIDDEN CLASS ============= */
+        .hidden {
+            display: none !important;
+        }
+
+        /* ============= RESPONSIVE DESIGN ============= */
+        @media (max-width: 1024px) {
+            .settings-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .settings-left {
+                gap: 20px;
+            }
+
+            .crop-grid {
+                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .settings-container {
+                padding: 20px 15px;
+            }
+
+            .crop-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+                gap: 10px;
+            }
+
+            .crop-option {
+                padding: 10px;
+            }
+
+            .crop-option img {
+                width: 40px;
+                height: 40px;
+            }
+
+            .crop-option-label {
+                font-size: 11px;
+            }
+
+            .settings-card {
+                padding: 22px;
+            }
+
+            .settings-option {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+                padding: 16px 0;
+            }
+
+            .crop-select {
+                width: 100%;
+                min-width: auto;
+            }
+
+            .save-status {
+                bottom: 20px;
+                right: 20px;
+                left: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-wrapper">
+        <div class="dashboard-header">
+            <div id="headerComponent"></div>
+        </div>
+
+        <div class="dashboard-content">
+            <div class="dashboard-body">
+                <div class="settings-container">
+                    <button id="backBtn" class="back-btn">← Back to Dashboard</button>
+
+                    <!-- Skeleton Loader -->
+                    <div id="skeletonLoader" class="skeleton-loader show">
+                        <div class="settings-grid">
+                            <div class="settings-left">
+                                <div class="settings-card">
+                                    <div class="skeleton skeleton-text" style="width: 40%; height: 24px;"></div>
+                                    <div class="skeleton skeleton-text"></div>
+                                    <div class="skeleton skeleton-text"></div>
+                                </div>
+                                <div class="settings-card">
+                                    <div class="skeleton skeleton-text" style="width: 40%; height: 24px;"></div>
+                                    <div class="skeleton skeleton-text"></div>
+                                </div>
+                            </div>
+                            <div class="settings-card">
+                                <div class="skeleton skeleton-text" style="width: 40%; height: 24px;"></div>
+                                <div class="skeleton skeleton-text"></div>
+                                <div class="skeleton skeleton-text"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Content -->
+                    <div id="settingsContent" class="hidden">
+                        <div class="settings-grid">
+                            <!-- Left Column: Appearance & Preferences -->
+                            <div class="settings-left">
+                                <!-- Appearance -->
+                                <div class="settings-card">
+                                    <h2>🎨 Appearance</h2>
+                                    <p>Customize how the app looks</p>
+
+                                    <div class="settings-option">
+                                        <div class="option-info">
+                                            <span class="option-label">Dark Mode</span>
+                                            <p class="option-desc">Use dark theme for dashboard</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="darkModeToggle">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Preferences -->
+                                <div class="settings-card">
+                                    <h2>📋 Preferences</h2>
+                                    <p>Manage your farming preferences</p>
+
+                                    <div class="settings-option">
+                                        <div class="option-label-wrapper">
+                                            <span class="option-label">Select your primary crop</span>
+                                        </div>
+                                        <select id="cropSelect" class="crop-select">
+                                            <option value="">-- Select Crop --</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Column: Notifications -->
+                            <div class="settings-card">
+                                <h2>🔔 Notifications</h2>
+                                <p>Control how you receive updates</p>
+
+                                <div class="settings-option">
+                                    <div class="option-info">
+                                        <span class="option-label">pH Alerts</span>
+                                        <p class="option-desc">Notify when pH out of range</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="phAlertsToggle" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="settings-option">
+                                    <div class="option-info">
+                                        <span class="option-label">System Updates</span>
+                                        <p class="option-desc">Receive system update notifications</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="updatesToggle" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div class="settings-option">
+                                    <div class="option-info">
+                                        <span class="option-label">Weekly Summary</span>
+                                        <p class="option-desc">Receive weekly activity summary</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="summaryToggle" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="saveStatus" class="save-status"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./settings.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,259 @@
+/**
+ * Light Mode Theme Overrides
+ * Complements the dark mode defaults for light theme users
+ */
+
+html.light-mode {
+    /* Background Colors - Invert for light */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafb;
+    --bg-tertiary: #f0f2f5;
+    --bg-card: #ffffff;
+    --bg-hover: #f3f4f6;
+
+    /* Text Colors - Invert for light */
+    --text-primary: #111827;
+    --text-secondary: #4b5563;
+    --text-tertiary: #9ca3af;
+
+    /* Shadows - Lighter on light background */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+html.light-mode body {
+    background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+}
+
+html.light-mode .card {
+    border-color: rgba(0, 0, 0, 0.08);
+    background-color: #ffffff;
+}
+
+html.light-mode .card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+html.light-mode .status-card {
+    background-color: #ffffff;
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+html.light-mode .status-card:hover {
+    border-color: #10b981;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+html.light-mode input,
+html.light-mode textarea,
+html.light-mode select {
+    background-color: #f8fafb;
+    border-color: #d1d5db;
+    color: #111827;
+}
+
+html.light-mode input:focus,
+html.light-mode textarea:focus,
+html.light-mode select:focus {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.08);
+}
+
+html.light-mode .btn-secondary {
+    background-color: #f3f4f6;
+    border-color: #d1d5db;
+    color: #111827;
+}
+
+html.light-mode .btn-secondary:hover:not(:disabled) {
+    background-color: #eff1f5;
+    border-color: #10b981;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+html.light-mode .ph-monitoring-panel {
+    background-color: #ffffff;
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+html.light-mode .pump-log-section {
+    background-color: #ffffff;
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+html.light-mode .crop-selector {
+    background-color: #ffffff;
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+html.light-mode .header-wrapper {
+    background-color: #ffffff;
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+html.light-mode .dropdown {
+    background-color: #ffffff;
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+}
+
+html.light-mode .form-divider::before,
+html.light-mode .form-divider::after {
+    background-color: #e5e7eb;
+}
+
+html.light-mode .crop-card {
+    background-color: #f8fafb;
+    border-color: #e5e7eb;
+}
+
+html.light-mode .crop-card:hover {
+    border-color: #10b981;
+    background-color: #f3f4f6;
+}
+
+html.light-mode .crop-card.selected {
+    background-color: rgba(16, 185, 129, 0.08);
+    border-color: #10b981;
+}
+
+html.light-mode .modal-content {
+    background-color: #ffffff;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+html.light-mode .modal-header {
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+html.light-mode .modal-footer {
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+html.light-mode .log-line {
+    background-color: #e5e7eb;
+}
+
+html.light-mode .log-dot {
+    background-color: #f3f4f6;
+}
+
+html.light-mode .ph-info-item {
+    background-color: #f8fafb;
+}
+
+/* Light mode button hover states */
+html.light-mode .header-btn:hover {
+    background-color: #f3f4f6;
+    border-color: #10b981;
+}
+
+html.light-mode .social-btn:hover {
+    background-color: #f3f4f6;
+    border-color: #10b981;
+}
+
+html.light-mode .btn-lock:hover {
+    background-color: #f3f4f6;
+    border-color: #10b981;
+}
+
+/* Alert styling for light mode */
+html.light-mode .alert {
+    border-color: transparent;
+}
+
+html.light-mode .alert-success {
+    background-color: rgba(16, 185, 129, 0.08);
+    border-color: #10b981;
+    color: #059669;
+}
+
+html.light-mode .alert-warning {
+    background-color: rgba(245, 158, 11, 0.08);
+    border-color: #f59e0b;
+    color: #d97706;
+}
+
+html.light-mode .alert-danger {
+    background-color: rgba(239, 68, 68, 0.08);
+    border-color: #ef4444;
+    color: #dc2626;
+}
+
+html.light-mode .alert-info {
+    background-color: rgba(59, 130, 246, 0.08);
+    border-color: #3b82f6;
+    color: #1d4ed8;
+}
+
+/* Badge styling for light mode */
+html.light-mode .badge-primary {
+    background-color: rgba(16, 185, 129, 0.12);
+    color: #059669;
+}
+
+html.light-mode .badge-success {
+    background-color: rgba(16, 185, 129, 0.12);
+    color: #059669;
+}
+
+html.light-mode .badge-warning {
+    background-color: rgba(245, 158, 11, 0.12);
+    color: #d97706;
+}
+
+html.light-mode .badge-danger {
+    background-color: rgba(239, 68, 68, 0.12);
+    color: #dc2626;
+}
+
+/* Chart styling for light mode */
+html.light-mode .phChart {
+    background-color: #ffffff;
+}
+
+/* Skeleton loading animation for light mode */
+html.light-mode .skeleton {
+    background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+}
+
+/* Status badge colors for light mode */
+html.light-mode .status-badge.badge-success {
+    background-color: rgba(16, 185, 129, 0.12);
+    color: #059669;
+}
+
+html.light-mode .status-badge.badge-danger {
+    background-color: rgba(239, 68, 68, 0.12);
+    color: #dc2626;
+}
+
+/* Dropdown item hover for light mode */
+html.light-mode .dropdown-item:hover {
+    background-color: #f3f4f6;
+    color: #10b981;
+}
+
+html.light-mode .dropdown-item.danger:hover {
+    background-color: rgba(239, 68, 68, 0.08);
+    color: #dc2626;
+}
+
+/* Theme toggle button appearance for light mode */
+html.light-mode .header-btn.theme-btn {
+    background-color: #f3f4f6;
+    border-color: #d1d5db;
+}
+
+html.light-mode .header-btn.theme-btn:hover {
+    background-color: #e5e7eb;
+    border-color: #10b981;
+}
+
+/* Transition for light mode background */
+html.light-mode {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
