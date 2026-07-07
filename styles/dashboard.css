@@ -186,6 +186,58 @@ html[data-theme="dark"] .dropdown-divider {
     overflow: hidden;
 }
 
+.market-prices-section {
+    padding: 0 var(--space-6) var(--space-6);
+}
+
+.market-prices-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(6, 182, 212, 0.08));
+    border: 1px solid rgba(16, 185, 129, 0.16);
+    box-shadow: var(--shadow-md);
+    flex-wrap: wrap;
+}
+
+.market-prices-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.market-prices-desc {
+    color: var(--text-muted);
+    max-width: 720px;
+    line-height: 1.5;
+}
+
+.market-prices-actions {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .market-prices-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .market-prices-actions {
+        width: 100%;
+    }
+
+    .market-prices-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
 .dashboard-header {
     position: fixed;
     top: 0;
